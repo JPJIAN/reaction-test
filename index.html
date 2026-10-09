@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="A simple browser reaction time test. Wait for green, then click or tap as fast as you can." />
+  <title>Reaction Time Test</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020;
+      --panel: #151b2e;
+      --text: #f8fafc;
+      --muted: #a9b3c7;
+      --accent: #5b8cff;
+      --wait: #c9363e;
+      --go: #22a65a;
+      --early: #d97706;
+      --border: rgba(255,255,255,.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    main {
+      width: min(900px, 100%);
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .top {
+      text-align: center;
+      padding: 12px 8px 0;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 5vw, 46px);
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    #testArea {
+      min-height: 430px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 30px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      transition: background-color .16s ease, transform .08s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      outline: none;
+    }
+
+    #testArea:active { transform: scale(.997); }
+    #testArea.waiting { background: var(--wait); }
+    #testArea.go { background: var(--go); }
+    #testArea.early { background: var(--early); }
+
+    .big {
+      font-size: clamp(30px, 7vw, 64px);
+      font-weight: 800;
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    .small {
+      font-size: clamp(15px, 2.5vw, 20px);
+      opacity: .9;
+      line-height: 1.5;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .value {
+      font-size: 24px;
+      font-weight: 750;
+    }
+
+    .history {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .history h2 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    #historyList {
+      margin: 0;
+      padding-left: 22px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .hint {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding-bottom: 8px;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 12px; }
+      #testArea { min-height: 55vh; border-radius: 20px; }
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="top">
+      <h1>Reaction Time Test</h1>
+      <p class="subtitle">Wait for green, then click or tap as fast as you can.</p>
+    </section>
+
+    <section id="testArea" tabindex="0" role="button" aria-label="Reaction test area">
+      <div>
+        <div class="big" id="mainText">Click to start</div>
+        <div class="small" id="subText">Your reaction time will be measured in milliseconds.</div>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Reaction statistics">
+      <div class="card">
+        <div class="label">Latest</div>
+        <div class="value" id="latest">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Best</div>
+        <div class="value" id="best">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Average</div>
+        <div class="value" id="average">—</div>
+      </div>
+    </section>
+
+    <section class="history">
+      <h2>Recent results</h2>
+      <ol id="historyList">
+        <li>No results yet.</li>
+      </ol>
+    </section>
+
+    <div class="hint">Tip: You can also press the Space or Enter key on a computer.</div>
+  </main>
+
+  <script>
+    const area = document.getElementById('testArea');
+    const mainText = document.getElementById('mainText');
+    const subText = document.getElementById('subText');
+    const latestEl = document.getElementById('latest');
+    const bestEl = document.getElementById('best');
+    const averageEl = document.getElementById('average');
+    const historyList = document.getElementById('historyList');
+
+    let state = 'idle';
+    let timerId = null;
+    let greenAt = 0;
+    let results = JSON.parse(localStorage.getItem('reactionResults') || '[]');
+
+    function saveResults() {
+      localStorage.setItem('reactionResults', JSON.stringify(results));
+    }
+
+    function updateStats() {
+      if (!results.length) {
+        latestEl.textContent = '—';
+        bestEl.textContent = '—';
+        averageEl.textContent = '—';
+        historyList.innerHTML = '<li>No results yet.</li>';
+        return;
+      }
+
+      const latest = results[results.length - 1];
+      const best = Math.min(...results);
+      const avg = Math.round(results.reduce((a, b) => a + b, 0) / results.length);
+
+      latestEl.textContent = latest + ' ms';
+      bestEl.textContent = best + ' ms';
+      averageEl.textContent = avg + ' ms';
+
+      const recent = results.slice(-5).reverse();
+      historyList.innerHTML = recent.map(v => '<li>' + v + ' ms</li>').join('');
+    }
+
+    function setVisual(mode) {
+      area.classList.remove('waiting', 'go', 'early');
+      if (mode) area.classList.add(mode);
+    }
+
+    function startTest() {
+      state = 'waiting';
+      setVisual('waiting');
+      mainText.textContent = 'Wait for green…';
+      subText.textContent = 'Do not click yet.';
+
+      const delay = 2000 + Math.random() * 3000;
+      timerId = setTimeout(() => {
+        state = 'ready';
+        setVisual('go');
+        mainText.textContent = 'CLICK!';
+        subText.textContent = 'Go now!';
+        greenAt = performance.now();
+      }, delay);
+    }
+
+    function handleAction() {
+      if (state === 'idle' || state === 'result' || state === 'early') {
+        startTest();
+        return;
+      }
+
+      if (state === 'waiting') {
+        clearTimeout(timerId);
+        state = 'early';
+        setVisual('early');
+        mainText.textContent = 'Too soon!';
+        subText.textContent = 'Click again to retry.';
+        return;
+      }
+
+      if (state === 'ready') {
+        const reaction = Math.round(performance.now() - greenAt);
+        results.push(reaction);
+
+        if (results.length > 50) {
+          results = results.slice(-50);
+        }
+
+        saveResults();
+        updateStats();
+
+        state = 'result';
+        setVisual('');
+        mainText.textContent = reaction + ' ms';
+        subText.textContent = rating(reaction) + ' Click again to test once more.';
+      }
+    }
+
+    function rating(ms) {
+      if (ms < 180) return 'Excellent!';
+      if (ms < 220) return 'Very fast!';
+      if (ms < 280) return 'Good reaction time.';
+      if (ms < 350) return 'Average reaction time.';
+      return 'Keep practicing!';
+    }
+
+    area.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      handleAction();
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.code === 'Space' || event.code === 'Enter') {
+        event.preventDefault();
+        handleAction();
+      }
+    });
+
+    updateStats();
+  </script>
+</body>
+</html>
