@@ -1,312 +1,505 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="description" content="A simple browser reaction time test. Wait for green, then click or tap as fast as you can." />
-  <title>Reaction Time Test</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="PadLab 在线手柄测试：检测摇杆漂移、死区、摇杆方向与手柄按键响应。无需安装软件，也包含反应时间测试。">
+  <meta name="theme-color" content="#0b1120">
+  <title>PadLab | 在线手柄摇杆漂移与按键测试</title>
   <style>
     :root {
       color-scheme: dark;
-      --bg: #0b1020;
-      --panel: #151b2e;
-      --text: #f8fafc;
-      --muted: #a9b3c7;
-      --accent: #5b8cff;
-      --wait: #c9363e;
-      --go: #22a65a;
-      --early: #d97706;
-      --border: rgba(255,255,255,.10);
+      --bg: #0a1020;
+      --panel: #151e30;
+      --panel2: #1c2840;
+      --border: #2e3b54;
+      --muted: #a5b1c5;
+      --white: #f3f7ff;
+      --cyan: #59d8e8;
+      --blue: #6988ff;
+      --green: #46d5a0;
+      --orange: #ffb86b;
+      --red: #ff7885;
     }
-
-    * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
     body {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      padding: 20px;
+      margin:0; min-height:100vh;
+      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      background:radial-gradient(ellipse at 50% -380px,#213d70 0,transparent 70%),var(--bg);
+      color:var(--white);
+      line-height:1.5;
     }
-
-    main {
-      width: min(900px, 100%);
-      display: grid;
-      gap: 16px;
-      align-content: start;
+    button,select,input { font:inherit; }
+    button { cursor:pointer; }
+    button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid #70d6ed; outline-offset:4px; }
+    .wrap { width:min(1150px,calc(100% - 36px)); margin:auto; }
+    .topbar { position:relative; border-bottom:1px solid var(--border); background:rgba(10,16,32,.88); }
+    .nav { min-height:74px; display:flex; align-items:center; justify-content:space-between; gap:18px; }
+    .brand { font-weight:850; font-size:23px; letter-spacing:-.7px; white-space:nowrap; }
+    .brand span { color:var(--cyan); }
+    .tabs { display:flex; flex-wrap:wrap; gap:8px; }
+    .tabs a { text-decoration:none; color:var(--muted); border-radius:12px; padding:10px 14px; font-size:14px; font-weight:650; }
+    .tabs a.active { color:var(--white); background:#283b60; }
+    .tabs a:hover { color:var(--white); background:#1e2d49; }
+    .hero { padding:52px 0 30px; }
+    .eyebrow { margin:0 0 12px; color:var(--cyan); font-size:12px; font-weight:800; letter-spacing:2px; }
+    h1 { margin:0; font-size:clamp(29px,5.5vw,52px); line-height:1.17; letter-spacing:-1.4px; }
+    .hero p.description { margin:16px 0 0; max-width:680px; color:var(--muted); font-size:16px; line-height:1.8; }
+    .pills { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+    .pill { color:#c9d7ea; background:#1a2b46; border:1px solid #2a4160; padding:6px 10px; border-radius:999px; font-size:12px; }
+    .panel { border:1px solid var(--border); background:var(--panel); border-radius:19px; }
+    .connection { display:grid; grid-template-columns:1fr auto; gap:16px; padding:22px; margin-bottom:22px; align-items:center; }
+    .connection-top { display:flex; align-items:center; flex-wrap:wrap; gap:11px; }
+    .status-dot { width:10px; height:10px; display:inline-block; background:#66748c; border-radius:50%; box-shadow:0 0 0 5px #66748c20; }
+    .status-dot.online { background:var(--green); box-shadow:0 0 0 5px #46d5a020; }
+    .connection h2 { margin:0; font-size:18px; }
+    .status-label { border-radius:999px; padding:4px 10px; color:#c5d0e4; background:#263347; font-size:12px; }
+    .device-hint { color:var(--muted); margin:10px 0 0; font-size:13px; }
+    select {
+      width:min(290px,100%); min-width:190px; max-width:100%;
+      background:var(--panel2); border:1px solid #3d4f71; color:var(--white);
+      padding:12px 14px; border-radius:10px; overflow:hidden; text-overflow:ellipsis;
     }
-
-    .top {
-      text-align: center;
-      padding: 12px 8px 0;
+    .section-head { display:flex; align-items:end; justify-content:space-between; flex-wrap:wrap; gap:8px; margin:20px 0 13px; }
+    .section-head h2 { margin:0; font-size:21px; letter-spacing:-.3px; }
+    .section-head p { color:var(--muted); margin:0; font-size:12px; }
+    .stick-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+    .stick { padding:20px; display:flex; flex-direction:column; align-items:center; gap:13px; }
+    .stick-title { display:flex; width:100%; justify-content:space-between; align-items:center; gap:10px; }
+    .stick-title h3 { margin:0; font-size:17px; }
+    .axis-label { color:#b7c5d9; font-size:11px; background:#23334c; border-radius:6px; padding:4px 7px; }
+    .joystick {
+      position:relative; width:min(224px,76%); aspect-ratio:1;
+      border-radius:50%; overflow:hidden;
+      background:radial-gradient(circle at center,#1c3450 0,#142236 68%,#111d30 100%);
+      border:2px solid #455975; box-shadow:inset 0 0 30px #09101e77,0 8px 30px #0002;
     }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: clamp(28px, 5vw, 46px);
-      letter-spacing: -0.03em;
+    .joystick::before,.joystick::after { content:""; position:absolute; pointer-events:none; z-index:1; background:#58719175; }
+    .joystick::before { width:1px; height:100%; top:0; left:50%; }
+    .joystick::after { width:100%; height:1px; top:50%; left:0; }
+    .deadzone-ring {
+      position:absolute; width:7%; height:7%; top:50%; left:50%;
+      transform:translate(-50%,-50%); border:1px dashed var(--orange);
+      border-radius:50%; background:#ffb86b16; z-index:2; pointer-events:none;
     }
-
-    .subtitle {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
+    .center { position:absolute; width:5px; height:5px; border-radius:50%; background:#cfdbea; top:50%; left:50%; transform:translate(-50%,-50%); z-index:3; }
+    .marker {
+      position:absolute; left:50%; top:50%; width:23px; height:23px;
+      background:var(--cyan); border:4px solid #d1faff; border-radius:50%;
+      transform:translate(-50%,-50%); box-shadow:0 0 25px #59d8e880; z-index:5;
+      transition:left 40ms linear,top 40ms linear; pointer-events:none;
     }
-
-    #testArea {
-      min-height: 430px;
-      border-radius: 24px;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 30px;
-      cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-      transition: background-color .16s ease, transform .08s ease;
-      box-shadow: 0 20px 60px rgba(0,0,0,.25);
-      outline: none;
+    .axis-data { display:grid; width:100%; grid-template-columns:repeat(3,1fr); gap:7px; }
+    .number { background:#101b2e; padding:11px 5px; text-align:center; border-radius:11px; border:1px solid #273651; min-width:0; }
+    .number small { display:block; color:var(--muted); font-size:11px; margin-bottom:4px; }
+    .number strong { font-variant-numeric:tabular-nums; font-size:19px; white-space:nowrap; }
+    .helper { text-align:center; color:var(--muted); font-size:12px; }
+    .measure { padding:23px; margin-top:18px; }
+    .measure-head { display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center; gap:14px; margin-bottom:14px; }
+    .measure-head h3 { margin:0; font-size:20px; }
+    .measure-head p { margin:5px 0 0; font-size:13px; color:var(--muted); }
+    .controls { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .controls label { font-size:13px; color:#d0dbed; }
+    input[type="range"] { width:140px; accent-color:var(--cyan); vertical-align:middle; }
+    .primary {
+      background:linear-gradient(115deg,#6edbeb,#6d8cf8); border:0; color:#0d1b33;
+      padding:12px 18px; border-radius:10px; font-weight:800; min-height:43px;
     }
-
-    #testArea:active { transform: scale(.997); }
-    #testArea.waiting { background: var(--wait); }
-    #testArea.go { background: var(--go); }
-    #testArea.early { background: var(--early); }
-
-    .big {
-      font-size: clamp(30px, 7vw, 64px);
-      font-weight: 800;
-      line-height: 1.05;
-      margin-bottom: 12px;
-    }
-
-    .small {
-      font-size: clamp(15px, 2.5vw, 20px);
-      opacity: .9;
-      line-height: 1.5;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      text-align: center;
-    }
-
-    .label {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 6px;
-    }
-
-    .value {
-      font-size: 24px;
-      font-weight: 750;
-    }
-
-    .history {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-    }
-
-    .history h2 {
-      margin: 0 0 10px;
-      font-size: 16px;
-    }
-
-    #historyList {
-      margin: 0;
-      padding-left: 22px;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    .hint {
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      padding-bottom: 8px;
-    }
-
-    @media (max-width: 600px) {
-      body { padding: 12px; }
-      #testArea { min-height: 55vh; border-radius: 20px; }
-      .stats { grid-template-columns: 1fr; }
+    .primary:disabled { cursor:not-allowed; opacity:.45; }
+    .progress { background:#293850; height:5px; border-radius:10px; overflow:hidden; margin:13px 0 0; }
+    .progress > div { width:0%; height:100%; background:var(--cyan); transition:width 80ms linear; }
+    #measureStatus { margin-top:12px; color:var(--muted); font-size:13px; min-height:22px; }
+    .results { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+    .result { border:1px solid var(--border); background:#10192a; padding:16px; border-radius:12px; }
+    .result h4 { margin:0 0 12px; font-size:15px; }
+    .result-values { display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+    .result-values span { font-size:12px; color:var(--muted); }
+    .result-values b { display:block; font-size:23px; font-variant-numeric:tabular-nums; color:#d2f8ff; }
+    .verdict { border-top:1px solid #29384e; padding-top:10px; margin-top:12px; color:var(--muted); font-size:13px; }
+    .verdict.warning { color:var(--orange); }
+    .verdict.good { color:var(--green); }
+    .buttons-panel { padding:20px; margin-bottom:20px; }
+    .buttons-panel .caption { color:var(--muted); font-size:13px; margin:0 0 15px; }
+    .button-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:9px; }
+    .game-button { background:#111b2e; color:#d9e1ee; border:1px solid #334359; border-radius:11px; padding:13px 5px; text-align:center; min-width:0; transition:background .07s; }
+    .game-button.on { background:#166e67; border-color:#72e9c3; color:white; box-shadow:0 0 14px #40e5ba26; }
+    .game-button .name { display:block; font-size:12px; font-weight:780; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .game-button .val { display:block; font-size:11px; margin-top:3px; opacity:.65; font-variant-numeric:tabular-nums; }
+    .empty { color:var(--muted); border:1px dashed #3e5069; border-radius:10px; text-align:center; padding:22px 10px; grid-column:1 / -1; }
+    .faq { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; margin-bottom:30px; }
+    .faq .panel { padding:19px; }
+    .faq h3 { font-size:15px; margin:0 0 6px; }
+    .faq p { margin:0; color:var(--muted); font-size:13px; line-height:1.75; }
+    footer { padding:25px 0 45px; border-top:1px solid #253248; color:var(--muted); text-align:center; font-size:12px; }
+    footer a { color:#b7e8ee; }
+    @media(max-width:720px) {
+      .wrap { width:min(100% - 24px,1150px); }
+      .nav { min-height:64px; }
+      .brand { font-size:21px; }
+      .tabs a { font-size:12px; padding:9px; }
+      .hero { padding:34px 0 25px; }
+      .connection { grid-template-columns:1fr; padding:17px; }
+      select { width:100%; }
+      .stick-grid { grid-template-columns:1fr; }
+      .stick { padding:17px; }
+      .measure { padding:17px; }
+      .results { grid-template-columns:1fr; }
+      .button-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .faq { grid-template-columns:1fr; }
     }
   </style>
 </head>
 <body>
-  <main>
-    <section class="top">
-      <h1>Reaction Time Test</h1>
-      <p class="subtitle">Wait for green, then click or tap as fast as you can.</p>
+  <header class="topbar">
+    <div class="wrap nav">
+      <div class="brand">◈ Pad<span>Lab</span></div>
+      <nav class="tabs" aria-label="工具导航">
+        <a href="./" class="active" aria-current="page">🎮 手柄检测</a>
+        <a href="./reaction.html">⚡ 反应时间测试</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <p class="eyebrow">GAMEPAD DIAGNOSTICS · FREE ONLINE TOOL</p>
+      <h1>检测你的手柄，<br>每一点偏移都看得见。</h1>
+      <p class="description">连接 Xbox、PlayStation 或其他兼容手柄，即可实时检查摇杆位置、静止漂移程度、按键响应和死区。无需下载、无需注册。</p>
+      <div class="pills"><span class="pill">● 实时轴数据</span><span class="pill">● 摇杆漂移评估</span><span class="pill">● 按键响应测试</span><span class="pill">● 完全在浏览器中运行</span></div>
     </section>
 
-    <section id="testArea" tabindex="0" role="button" aria-label="Reaction test area">
+    <section class="panel connection" aria-label="手柄连接">
       <div>
-        <div class="big" id="mainText">Click to start</div>
-        <div class="small" id="subText">Your reaction time will be measured in milliseconds.</div>
+        <div class="connection-top">
+          <span id="statusDot" class="status-dot"></span>
+          <h2 id="statusHeading">等待连接手柄</h2>
+          <span id="statusLabel" class="status-label">未检测到设备</span>
+        </div>
+        <p id="deviceHint" class="device-hint">用 USB 或蓝牙连接手柄，然后在手柄上按任意按键。推荐使用 Chrome 或 Edge。</p>
+      </div>
+      <select id="gamepadSelect" aria-label="选择手柄" disabled><option>暂无可用手柄</option></select>
+    </section>
+
+    <div class="section-head">
+      <h2>实时摇杆检测</h2>
+      <p>中心点表示 0，圆周表示最大推杆幅度</p>
+    </div>
+    <section class="stick-grid" aria-label="摇杆实时数据">
+      <article class="panel stick">
+        <div class="stick-title"><h3>左摇杆 <span style="color:var(--cyan)">L</span></h3><span class="axis-label">AXIS 0 / 1</span></div>
+        <div class="joystick" aria-label="左摇杆位置">
+          <div class="deadzone-ring" id="leftRing"></div><div class="center"></div><div class="marker" id="leftMarker"></div>
+        </div>
+        <div class="axis-data">
+          <div class="number"><small>X 轴</small><strong id="leftX">—</strong></div>
+          <div class="number"><small>Y 轴</small><strong id="leftY">—</strong></div>
+          <div class="number"><small>偏移幅度</small><strong id="leftMag">—</strong></div>
+        </div>
+        <div class="helper" id="leftDirection">等待输入</div>
+      </article>
+      <article class="panel stick">
+        <div class="stick-title"><h3>右摇杆 <span style="color:var(--cyan)">R</span></h3><span class="axis-label">AXIS 2 / 3</span></div>
+        <div class="joystick" aria-label="右摇杆位置">
+          <div class="deadzone-ring" id="rightRing"></div><div class="center"></div><div class="marker" id="rightMarker"></div>
+        </div>
+        <div class="axis-data">
+          <div class="number"><small>X 轴</small><strong id="rightX">—</strong></div>
+          <div class="number"><small>Y 轴</small><strong id="rightY">—</strong></div>
+          <div class="number"><small>偏移幅度</small><strong id="rightMag">—</strong></div>
+        </div>
+        <div class="helper" id="rightDirection">等待输入</div>
+      </article>
+    </section>
+
+    <section class="panel measure" aria-label="静止漂移测试">
+      <div class="measure-head">
+        <div>
+          <h3>静止漂移测试</h3>
+          <p>松开两个摇杆，点击测量，保持 3 秒不要触碰手柄。</p>
+        </div>
+        <div class="controls">
+          <label for="deadzone">参考死区 <b id="deadzoneValue">8%</b></label>
+          <input type="range" id="deadzone" min="1" max="25" step="1" value="8">
+          <button class="primary" id="measureButton" disabled>开始测量</button>
+        </div>
+      </div>
+      <div class="progress" aria-label="测量进度"><div id="progressBar"></div></div>
+      <div id="measureStatus" role="status">连接手柄后可进行静止偏移测量。</div>
+      <div class="results">
+        <div class="result">
+          <h4>左摇杆 · 静止数据</h4>
+          <div class="result-values">
+            <span>平均偏移<b id="leftAverage">—</b></span>
+            <span>最大偏移<b id="leftPeak">—</b></span>
+          </div>
+          <div class="verdict" id="leftVerdict">等待测量</div>
+        </div>
+        <div class="result">
+          <h4>右摇杆 · 静止数据</h4>
+          <div class="result-values">
+            <span>平均偏移<b id="rightAverage">—</b></span>
+            <span>最大偏移<b id="rightPeak">—</b></span>
+          </div>
+          <div class="verdict" id="rightVerdict">等待测量</div>
+        </div>
       </div>
     </section>
 
-    <section class="stats" aria-label="Reaction statistics">
-      <div class="card">
-        <div class="label">Latest</div>
-        <div class="value" id="latest">—</div>
-      </div>
-      <div class="card">
-        <div class="label">Best</div>
-        <div class="value" id="best">—</div>
-      </div>
-      <div class="card">
-        <div class="label">Average</div>
-        <div class="value" id="average">—</div>
-      </div>
+    <div class="section-head"><h2>按键响应测试</h2><p>按下手柄按键，对应方块实时高亮</p></div>
+    <section class="panel buttons-panel">
+      <p class="caption" id="buttonHelp">连接手柄并按任意键，查看所有浏览器可以读取的按键。</p>
+      <div class="button-grid" id="buttonGrid"><div class="empty">尚未检测到手柄按键</div></div>
     </section>
 
-    <section class="history">
-      <h2>Recent results</h2>
-      <ol id="historyList">
-        <li>No results yet.</li>
-      </ol>
+    <div class="section-head"><h2>使用说明</h2></div>
+    <section class="faq">
+      <article class="panel"><h3>什么是摇杆漂移？</h3><p>没有触碰摇杆时，输出却无法回到中心，可能导致游戏人物自行移动或视角转动。静止偏移越大、越超过游戏设置的死区，越可能产生可见漂移。</p></article>
+      <article class="panel"><h3>为什么没有识别手柄？</h3><p>请确认已通过 USB 或蓝牙连接，再实际按一次手柄按钮让浏览器激活手柄接口。部分手柄、浏览器和系统组合可能不支持。网页建议使用 HTTPS 的 Chrome 或 Edge。</p></article>
+      <article class="panel"><h3>死区是什么意思？</h3><p>死区是游戏忽略的中心小范围。例如参考死区设为 8%，静止偏移小于 8% 通常可被这种死区过滤。这里的滑块只调整判断标准，<strong>不会修改手柄或游戏设置</strong>。</p></article>
+      <article class="panel"><h3>检测结果有多准确？</h3><p>数据来自浏览器的 Gamepad API，不是硬件仪器。浏览器、驱动、固件可能已经处理或过滤了轴值；不同手柄的轴编号也可能不同。测试仅供排查参考。</p></article>
     </section>
-
-    <div class="hint">Tip: You can also press the Space or Enter key on a computer.</div>
   </main>
+  <footer><div class="wrap">PadLab · 免费浏览器测试工具 · <a href="./reaction.html">打开反应时间测试 →</a></div></footer>
 
   <script>
-    const area = document.getElementById('testArea');
-    const mainText = document.getElementById('mainText');
-    const subText = document.getElementById('subText');
-    const latestEl = document.getElementById('latest');
-    const bestEl = document.getElementById('best');
-    const averageEl = document.getElementById('average');
-    const historyList = document.getElementById('historyList');
+    (() => {
+      "use strict";
+      const $ = (id) => document.getElementById(id);
+      const select = $("gamepadSelect");
+      const grid = $("buttonGrid");
+      const threshold = $("deadzone");
+      const names = ["A / ×","B / ○","X / □","Y / △","LB / L1","RB / R1","LT / L2","RT / R2","View / Share","Menu / Options","L3","R3","↑","↓","←","→","Home"];
+      let selectedIndex = null;
+      let deviceSignature = "";
+      let buttonNodes = [];
+      let measurement = null;
+      let lastPadKey = "";
+      const testTime = 3000;
 
-    let state = 'idle';
-    let timerId = null;
-    let greenAt = 0;
-    let results = JSON.parse(localStorage.getItem('reactionResults') || '[]');
+      const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+      const axis = (pad, i) => (pad && pad.axes && Number.isFinite(pad.axes[i])) ? clamp(pad.axes[i], -1, 1) : null;
+      const magnitude = (x, y) => x === null || y === null ? null : clamp(Math.hypot(x, y) * 100, 0, 100);
+      const formatPct = (v) => v === null ? "—" : v.toFixed(1) + "%";
+      const formatAxis = (v) => v === null ? "—" : (v * 100).toFixed(1) + "%";
 
-    function saveResults() {
-      localStorage.setItem('reactionResults', JSON.stringify(results));
-    }
-
-    function updateStats() {
-      if (!results.length) {
-        latestEl.textContent = '—';
-        bestEl.textContent = '—';
-        averageEl.textContent = '—';
-        historyList.innerHTML = '<li>No results yet.</li>';
-        return;
+      function pads() {
+        if (typeof navigator.getGamepads !== "function") return [];
+        try { return Array.from(navigator.getGamepads() || []).filter((p) => p && p.connected); }
+        catch (_) { return []; }
       }
 
-      const latest = results[results.length - 1];
-      const best = Math.min(...results);
-      const avg = Math.round(results.reduce((a, b) => a + b, 0) / results.length);
-
-      latestEl.textContent = latest + ' ms';
-      bestEl.textContent = best + ' ms';
-      averageEl.textContent = avg + ' ms';
-
-      const recent = results.slice(-5).reverse();
-      historyList.innerHTML = recent.map(v => '<li>' + v + ' ms</li>').join('');
-    }
-
-    function setVisual(mode) {
-      area.classList.remove('waiting', 'go', 'early');
-      if (mode) area.classList.add(mode);
-    }
-
-    function startTest() {
-      state = 'waiting';
-      setVisual('waiting');
-      mainText.textContent = 'Wait for green…';
-      subText.textContent = 'Do not click yet.';
-
-      const delay = 2000 + Math.random() * 3000;
-      timerId = setTimeout(() => {
-        state = 'ready';
-        setVisual('go');
-        mainText.textContent = 'CLICK!';
-        subText.textContent = 'Go now!';
-        greenAt = performance.now();
-      }, delay);
-    }
-
-    function handleAction() {
-      if (state === 'idle' || state === 'result' || state === 'early') {
-        startTest();
-        return;
-      }
-
-      if (state === 'waiting') {
-        clearTimeout(timerId);
-        state = 'early';
-        setVisual('early');
-        mainText.textContent = 'Too soon!';
-        subText.textContent = 'Click again to retry.';
-        return;
-      }
-
-      if (state === 'ready') {
-        const reaction = Math.round(performance.now() - greenAt);
-        results.push(reaction);
-
-        if (results.length > 50) {
-          results = results.slice(-50);
+      function updateDeviceList(devices) {
+        const signature = devices.map((p) => p.index + ":" + p.id).join("|");
+        if (signature !== deviceSignature) {
+          deviceSignature = signature;
+          select.replaceChildren();
+          for (const pad of devices) {
+            const option = document.createElement("option");
+            option.value = String(pad.index);
+            option.textContent = "设备 " + (pad.index + 1) + " · " + pad.id;
+            select.appendChild(option);
+          }
+          if (!devices.some((p) => p.index === selectedIndex)) selectedIndex = devices.length ? devices[0].index : null;
+          if (!devices.length) {
+            const option = document.createElement("option");
+            option.textContent = "暂无可用手柄";
+            select.appendChild(option);
+          }
         }
-
-        saveResults();
-        updateStats();
-
-        state = 'result';
-        setVisual('');
-        mainText.textContent = reaction + ' ms';
-        subText.textContent = rating(reaction) + ' Click again to test once more.';
+        const current = devices.find((p) => p.index === selectedIndex) || null;
+        select.disabled = devices.length < 2;
+        if (current && select.value !== String(current.index)) select.value = String(current.index);
+        $("statusDot").classList.toggle("online", !!current);
+        $("statusHeading").textContent = current ? "手柄已连接" : "等待连接手柄";
+        $("statusLabel").textContent = current ? "正在读取实时数据" : "未检测到设备";
+        $("deviceHint").textContent = current
+          ? current.id + " · " + current.axes.length + " 个轴 / " + current.buttons.length + " 个按键"
+          : (typeof navigator.getGamepads === "function"
+              ? "用 USB 或蓝牙连接手柄，然后在手柄上按任意按键。推荐使用 Chrome 或 Edge。"
+              : "当前浏览器不支持 Gamepad API，请尝试最新的 Chrome 或 Edge。");
+        $("measureButton").disabled = !current || !!measurement || current.axes.length < 4;
+        return current;
       }
-    }
 
-    function rating(ms) {
-      if (ms < 180) return 'Excellent!';
-      if (ms < 220) return 'Very fast!';
-      if (ms < 280) return 'Good reaction time.';
-      if (ms < 350) return 'Average reaction time.';
-      return 'Keep practicing!';
-    }
-
-    area.addEventListener('pointerdown', (event) => {
-      event.preventDefault();
-      handleAction();
-    });
-
-    window.addEventListener('keydown', (event) => {
-      if (event.code === 'Space' || event.code === 'Enter') {
-        event.preventDefault();
-        handleAction();
+      function direction(x, y, length) {
+        if (length === null) return "当前手柄无对应轴数据";
+        if (length < 1) return "接近中心";
+        const directions = ["右","右下","下","左下","左","左上","上","右上"];
+        const angle = Math.atan2(y, x);
+        const index = (Math.round(angle / (Math.PI / 4)) + 8) % 8;
+        return "偏移方向：" + directions[index];
       }
-    });
 
-    updateStats();
+      function renderStick(pad, side, offset) {
+        const x = axis(pad, offset);
+        const y = axis(pad, offset + 1);
+        const mag = magnitude(x, y);
+        const marker = $(side + "Marker");
+        marker.style.left = (50 + (x === null ? 0 : x * 42)) + "%";
+        marker.style.top = (50 + (y === null ? 0 : y * 42)) + "%";
+        $(side + "X").textContent = formatAxis(x);
+        $(side + "Y").textContent = formatAxis(y);
+        $(side + "Mag").textContent = formatPct(mag);
+        $(side + "Direction").textContent = direction(x, y, mag);
+        if (mag !== null) marker.style.background = mag > Number(threshold.value) ? "#ffbe75" : "#59d8e8";
+      }
+
+      function createButtonGrid(pad) {
+        buttonNodes = [];
+        grid.replaceChildren();
+        if (!pad || !pad.buttons.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = pad ? "此设备没有向浏览器提供按键数据" : "尚未检测到手柄按键";
+          grid.appendChild(empty);
+          return;
+        }
+        for (let i = 0; i < pad.buttons.length; i++) {
+          const tile = document.createElement("div");
+          tile.className = "game-button";
+          const name = document.createElement("span");
+          name.className = "name";
+          name.textContent = pad.mapping === "standard" && names[i] ? names[i] : "Button " + i;
+          const value = document.createElement("span");
+          value.className = "val";
+          value.textContent = "0%";
+          tile.append(name, value);
+          grid.appendChild(tile);
+          buttonNodes.push({tile, value});
+        }
+        $("buttonHelp").textContent = pad.mapping === "standard"
+          ? "检测到标准按键映射。按住按钮查看高亮；LT/RT 等扳机可显示模拟压力。"
+          : "此手柄提供非标准映射，按键采用原始编号显示，具体对应关系请实际按键确认。";
+      }
+
+      function renderButtons(pad) {
+        if (!pad) return;
+        pad.buttons.forEach((b, i) => {
+          if (!buttonNodes[i]) return;
+          const value = Number.isFinite(b.value) ? clamp(b.value, 0, 1) : (b.pressed ? 1 : 0);
+          buttonNodes[i].tile.classList.toggle("on", b.pressed || value > 0.15);
+          buttonNodes[i].value.textContent = Math.round(value * 100) + "%";
+        });
+      }
+
+      function runMeasurement(pad, now) {
+        if (!measurement) return;
+        if (!pad || pad.index !== measurement.index || pad.id !== measurement.id) {
+          measurement = null;
+          $("measureStatus").textContent = "手柄已断开或已切换，测量已取消。";
+          $("progressBar").style.width = "0%";
+          return;
+        }
+        const elapsed = now - measurement.start;
+        const left = magnitude(axis(pad, 0), axis(pad, 1));
+        const right = magnitude(axis(pad, 2), axis(pad, 3));
+        if (left !== null && right !== null) {
+          measurement.left.push(left);
+          measurement.right.push(right);
+        }
+        const fraction = clamp(elapsed / testTime, 0, 1);
+        $("progressBar").style.width = (fraction * 100).toFixed(1) + "%";
+        $("measureStatus").textContent = "测量中… " + Math.ceil(Math.max(0, testTime - elapsed) / 1000) + " 秒；请保持摇杆完全松开。";
+        if (elapsed >= testTime) {
+          const finished = measurement;
+          measurement = null;
+          const summary = (items) => {
+            if (!items.length) return null;
+            return { avg: items.reduce((a,b) => a+b, 0)/items.length, max: Math.max(...items) };
+          };
+          displaySummary("left", summary(finished.left));
+          displaySummary("right", summary(finished.right));
+          $("measureStatus").textContent = "测量完成！结果反映这 3 秒内报告的静止偏移，若结果异常可多测几次。";
+        }
+      }
+
+      function displaySummary(side, summary) {
+        $(side + "Average").textContent = summary ? formatPct(summary.avg) : "—";
+        $(side + "Peak").textContent = summary ? formatPct(summary.max) : "—";
+        const result = $(side + "Verdict");
+        result.classList.remove("good", "warning");
+        if (!summary) {
+          result.textContent = "没有获取到有效的轴数据";
+          return;
+        }
+        const deadzone = Number(threshold.value);
+        if (summary.avg > deadzone) {
+          result.classList.add("warning");
+          result.textContent = "平均偏移已超过参考死区，可能存在摇杆漂移。";
+        } else if (summary.max > deadzone) {
+          result.classList.add("warning");
+          result.textContent = "平均偏移在死区内，但有瞬间超过死区的数值；建议复测。";
+        } else {
+          result.classList.add("good");
+          result.textContent = "这次静止偏移在参考死区内，暂未发现明显异常。";
+        }
+      }
+
+      function drawDeadzone() {
+        $("deadzoneValue").textContent = threshold.value + "%";
+        for (const side of ["left","right"]) {
+          const ring = $(side + "Ring");
+          const diameter = Math.max(5, Number(threshold.value) * .84);
+          ring.style.width = diameter + "%";
+          ring.style.height = diameter + "%";
+        }
+      }
+
+      select.addEventListener("change", () => {
+        selectedIndex = Number(select.value);
+        deviceSignature = "";
+        if (measurement) {
+          measurement = null;
+          $("measureStatus").textContent = "已切换设备，测量取消。";
+          $("progressBar").style.width = "0%";
+        }
+      });
+
+      threshold.addEventListener("input", drawDeadzone);
+      $("measureButton").addEventListener("click", () => {
+        const p = pads().find((d) => d.index === selectedIndex);
+        if (!p || p.axes.length < 4 || measurement) return;
+        for (const side of ["left","right"]) {
+          $(side+"Average").textContent = "—";
+          $(side+"Peak").textContent = "—";
+          $(side+"Verdict").textContent = "正在采样…";
+          $(side+"Verdict").classList.remove("good","warning");
+        }
+        $("progressBar").style.width = "0%";
+        measurement = { index:p.index, id:p.id, start:performance.now(), left:[], right:[] };
+      });
+
+      window.addEventListener("gamepadconnected", () => { deviceSignature = ""; });
+      window.addEventListener("gamepaddisconnected", () => { deviceSignature = ""; });
+
+      let lastCheckAt = 0;
+      let currentPad = null;
+      function tick(now) {
+        if (now - lastCheckAt >= 150 || lastCheckAt === 0) {
+          const devices = pads();
+          currentPad = updateDeviceList(devices);
+          const key = currentPad ? currentPad.index + "|" + currentPad.id + "|" + currentPad.buttons.length + "|" + currentPad.mapping : "";
+          if (key !== lastPadKey) {
+            lastPadKey = key;
+            createButtonGrid(currentPad);
+          }
+          lastCheckAt = now;
+        }
+        // Get fresh gamepad input each animation frame (Gamepad objects may be snapshots).
+        if (currentPad) {
+          const live = pads().find((p) => p.index === selectedIndex);
+          currentPad = live || null;
+        }
+        renderStick(currentPad, "left", 0);
+        renderStick(currentPad, "right", 2);
+        renderButtons(currentPad);
+        runMeasurement(currentPad, now);
+        requestAnimationFrame(tick);
+      }
+      drawDeadzone();
+      requestAnimationFrame(tick);
+    })();
   </script>
 </body>
 </html>
