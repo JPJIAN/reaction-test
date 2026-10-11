@@ -36,7 +36,7 @@
   .label-group{display:flex;align-items:center;gap:10px;color:#6b738a;font-size:12px;font-weight:650;letter-spacing:.055em}
   .number-chip{display:grid;place-items:center;background:#fff8;border:1px solid #fff;width:30px;height:30px;border-radius:9px;font-weight:800;color:#7670b5;box-shadow:0 3px 8px #8592b615}
   .experiment-right{font-size:12px;color:#9094a9}
-  .reading-stage{height:525px;position:relative;overflow:hidden;isolation:isolate;border-radius:35px;border:1px solid rgba(255,255,255,.9);background:radial-gradient(ellipse 48% 68% at 107% 50%,#d9d4fe 0%,transparent 74%),radial-gradient(ellipse 35% 48% at -6% 95%,#f6dae6 0%,transparent 75%),linear-gradient(135deg,#fefdfb 0%,#f4f2f5 56%,#e9eaf9 100%);box-shadow:0 24px 55px #6d73a726,0 2px 6px #aeb3ce25,inset 0 1px 0 #fff}
+  .reading-stage{height:560px;position:relative;overflow:hidden;isolation:isolate;border-radius:35px;border:1px solid rgba(255,255,255,.9);background:radial-gradient(ellipse 48% 68% at 107% 50%,#d9d4fe 0%,transparent 74%),radial-gradient(ellipse 35% 48% at -6% 95%,#f6dae6 0%,transparent 75%),linear-gradient(135deg,#fefdfb 0%,#f4f2f5 56%,#e9eaf9 100%);box-shadow:0 24px 55px #6d73a726,0 2px 6px #aeb3ce25,inset 0 1px 0 #fff}
   .stage-orb{position:absolute;border-radius:50%;pointer-events:none;opacity:.9}
   .orb-one{right:-120px;top:88px;width:300px;height:300px;background:radial-gradient(circle at 34% 33%,#fffafa,#d5bdfa 43%,#7a83dc 71%,#dce5fb 91%);filter:blur(1px);box-shadow:inset -18px -22px 40px #6168a66b,0 34px 70px #878bd042;opacity:.55}
   .orb-two{right:68px;bottom:-115px;width:260px;height:260px;background:radial-gradient(circle at 30% 28%,#fffafa,#f8d0db 46%,#c1beff 77%);filter:blur(5px);opacity:.5}
@@ -48,23 +48,21 @@
   .story p{font-size:15.4px;line-height:2.12;letter-spacing:.035em;font-weight:440;color:#596079;margin:0 0 16px;max-width:760px}
   .story p strong{color:#363e58;font-weight:720}
   .story .pullquote{font-size:17px;line-height:1.85;color:#595c85;font-weight:690;letter-spacing:.045em;padding:14px 0 14px 21px;margin:18px 0 18px;border-left:3px solid #b2a8dc;max-width:580px}
-  .stage-bottom{position:absolute;left:39px;bottom:25px;font-size:10px;letter-spacing:.14em;font-weight:750;color:#aaa6bb;z-index:2;pointer-events:none}
-  .lens{--px:40%;--py:12%;--stretch:1;--turn:0deg;--press:1;width:332px;height:176px;position:absolute;top:0;left:0;z-index:10;border-radius:50% / 50%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;will-change:transform;transform:translate3d(225px,174px,0);filter:drop-shadow(0 17px 17px #6670b130) drop-shadow(0 5px 4px #60699726)}
+  .stage-bottom{position:absolute;left:39px;bottom:25px;font-size:10px;letter-spacing:.14em;font-weight:750;color:#aaa6bb;z-index:2;pointer-events:none;opacity:.52}
+  .lens{--px:32%;--py:12%;--stretch:1;--turn:0deg;--press:1;width:328px;height:184px;position:absolute;top:0;left:0;z-index:10;border-radius:50%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;will-change:transform;transform:translate3d(225px,174px,0);filter:drop-shadow(0 17px 12px #6974a127) drop-shadow(0 4px 5px #6474a419)}
   .lens:active{cursor:grabbing}
-  .lens-form{position:absolute;inset:0;border-radius:inherit;overflow:hidden;transform:scaleX(var(--stretch)) scaleY(var(--press)) rotate(var(--turn));transition:transform 420ms cubic-bezier(.16,1,.28,1);box-shadow:inset 0 1.6px 3px #fff, inset 0 -5px 10px #8997cb49, inset 7px 2px 15px #fefeff60, inset -8px -1px 12px #8591cc3f,0 0 0 1px #fff9}
+  .lens-form{position:absolute;inset:0;border-radius:inherit;overflow:hidden;isolation:isolate;transform:scaleX(var(--stretch)) scaleY(var(--press)) rotate(var(--turn));transition:transform 580ms cubic-bezier(.18,1.3,.23,1);box-shadow:inset 0 1px 2px #fff,inset 0 -6px 11px #8591b521,inset 0 0 0 1px #ffffffa1}
   .lens.dragging .lens-form{transition:transform 100ms linear}
-  .refraction{position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,#fff3 9%,#e7e8ff0c 45%,#fff3 94%);-webkit-backdrop-filter:blur(.7px) saturate(195%) contrast(106%);backdrop-filter:blur(.7px) saturate(195%) contrast(106%)}
-  .has-optics .refraction{-webkit-backdrop-filter:blur(.55px) saturate(175%) url(#lens-optics);backdrop-filter:blur(.55px) saturate(175%) url(#lens-optics)}
-  .magnify{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;mask-image:radial-gradient(ellipse at center,#000 30%,#000c 72%,transparent 97%);-webkit-mask-image:radial-gradient(ellipse at center,#000 30%,#000c 72%,transparent 97%)}
-  .magnify::before{content:"";position:absolute;inset:0;background:rgba(255,255,255,.41);pointer-events:none}
-  .story-clone{left:0!important;top:0!important;pointer-events:none;opacity:.96;transform-origin:0 0;will-change:transform}
-  .story-clone h2{color:#1f2942}
-  .story-clone p{color:#424b65}
-  .lens-fresnel{position:absolute;inset:0;border-radius:inherit;pointer-events:none;border:1px solid #ffffffcc;box-shadow:inset 0 2px 1.5px #fff, inset 0 -3px 5px #778abb4d,inset 5px 0 6px #fff9, inset -4px 0 7px #8797d442}
-  .lens-fresnel:before{content:"";position:absolute;inset:1px;border-radius:inherit;border:3px solid transparent;background:linear-gradient(142deg,#fff 3%,#ffffff06 22%,#ffffff12 48%,#fff9 83%,#fff 100%) border-box;mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;opacity:.75}
-  .lens-fresnel:after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse 35% 42% at var(--px) var(--py),#fff9,transparent 95%),linear-gradient(165deg,rgba(255,255,255,.57),transparent 23%,transparent 70%,rgba(255,255,255,.4) 96%);mix-blend-mode:screen;opacity:.68}
-  .dispersion{position:absolute;inset:2px;border-radius:inherit;pointer-events:none;box-shadow:inset 5px 3px 3px -3px #ff93d888,inset -5px -2px 4px -3px #66baffaa,inset 0 -4px 3px -3px #8995ed80;mix-blend-mode:screen;opacity:.8}
-  .lens-grip{position:absolute;left:50%;bottom:13px;transform:translateX(-50%);padding:5px 10px;background:#ffffff6c;box-shadow:0 1px 7px #8898a41b,inset 0 1px 0 #fff9;border:1px solid #ffffff73;border-radius:999px;font-size:9px;letter-spacing:.13em;color:#8c88a6;font-weight:760;white-space:nowrap;pointer-events:none;opacity:.8;transition:opacity .2s}
+  /* One optical sample from the actual backdrop. Never duplicate the text layer. */
+  .refraction{position:absolute;inset:0;border-radius:inherit;background:linear-gradient(156deg,#fff4 0%,#ffffff05 25%,#fff0 53%,#d5dff20a 81%,#fff3 100%);-webkit-backdrop-filter:blur(.2px) saturate(110%);backdrop-filter:blur(.2px) saturate(110%)}
+  .has-optics .refraction{-webkit-backdrop-filter:url(#lens-optics);backdrop-filter:url(#lens-optics)}
+  /* A thin bright rim, with specular caustics rather than a painted white surface. */
+  .lens-fresnel{position:absolute;inset:0;border-radius:inherit;pointer-events:none;border:1px solid #f8fbffe6;box-shadow:inset 0 1.5px 1px #fff, inset 0 -3px 4px #8392ba46, inset 5px 3px 9px -6px #fff, inset -6px 0 9px -6px #6981aa55}
+  .lens-fresnel:before{content:"";position:absolute;inset:1px;border-radius:inherit;border:3px solid transparent;background:conic-gradient(from 130deg at 50% 50%,#ffffffbd 0deg,#ffffff14 53deg,#ffffff07 125deg,#ffffff7a 172deg,#fffdf6ed 214deg,#ffffff24 272deg,#ffffffd2 326deg,#ffffffbd 360deg) border-box;-webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);mask-composite:exclude;opacity:.72}
+  .lens-fresnel:after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse 37% 29% at var(--px) var(--py),#ffffff82 0%,#ffffff12 54%,transparent 90%),linear-gradient(172deg,#fff8 0%,transparent 16%,transparent 75%,#c9d5f129 94%,#fff7);mix-blend-mode:screen;opacity:.74}
+  /* Chromatic dispersion belongs to the rim only, not RGB copies of text. */
+  .dispersion{position:absolute;inset:1px;border-radius:inherit;pointer-events:none;box-shadow:inset 3px 2px 3px -3px #e59ac25c,inset -3px -2px 3px -3px #6db7ed77,inset 0 -3px 3px -3px #9a95dc4a;mix-blend-mode:screen;opacity:.62}
+  .lens-grip{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);padding:4px 9px;background:#ffffff34;border:1px solid #ffffff80;border-radius:999px;font-size:9px;letter-spacing:.13em;color:#777c9b;font-weight:760;white-space:nowrap;pointer-events:none;opacity:.64;transition:opacity .25s}
   .lens.dragging .lens-grip{opacity:0}
   .hint-float{position:absolute;right:37px;top:37px;z-index:4;display:flex;align-items:center;gap:8px;color:#777c9d;font-weight:710;font-size:11px;border:1px solid #ffffffba;background:#ffffff8c;box-shadow:0 8px 24px #8994bd25,inset 0 1px 0 #fff;border-radius:999px;padding:9px 13px;pointer-events:none}
   .hint-float svg{width:15px;height:15px}
@@ -103,8 +101,8 @@
   .warm .orb-two{filter:hue-rotate(-25deg)}
   .footer{padding:0 0 38px;text-align:center;color:#a0a4b7;letter-spacing:.14em;font-size:10px;font-weight:730}
   .hidden-svg{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
-  @media(max-width:760px){.shell{width:min(100% - 26px,600px)}.navbar{padding:20px 4px}.intro{padding:36px 0 28px}.intro p{font-size:12.5px;max-width:320px}.experiment-right{display:none}.reading-stage{height:530px;border-radius:26px}.stage-top{left:23px;right:23px;top:22px}.stage-top span:last-child{display:none}.story{left:23px;top:80px;width:calc(100% - 46px)}.story h2{font-size:30px;margin-bottom:15px}.story p{font-size:13.8px;line-height:2.08}.story .pullquote{font-size:14.5px}.stage-bottom{left:23px;bottom:17px}.lens{width:286px;height:153px}.hint-float{right:14px;top:17px;font-size:9px;padding:7px 10px}.controls-row{align-items:flex-start}.controls-note{font-size:11px}.controls{width:100%;justify-content:space-between}.button-section{margin-top:44px;padding-bottom:70px}.button-shell{padding:40px 25px;gap:34px;min-height:320px;justify-content:center;text-align:center;border-radius:26px}.button-copy{max-width:400px}.button-copy p{font-size:12px}.glass-button{width:230px;height:66px}.mode-text{right:17px;bottom:15px}.brand{font-size:17px}}
-  @media(max-width:390px){.story{left:18px;width:calc(100% - 36px)}.reading-stage{height:555px}.story h2{font-size:27px}.story p{font-size:13.4px}.lens{width:260px;height:143px}.hint-float{top:16px}.slider-wrap{gap:6px}input[type=range]{width:87px}}
+  @media(max-width:760px){.nav-right{display:none}.stage-bottom{display:none}.shell{width:min(100% - 26px,600px)}.navbar{padding:20px 4px}.intro{padding:36px 0 28px}.intro p{font-size:12.5px;max-width:320px}.experiment-right{display:none}.reading-stage{height:530px;border-radius:26px}.stage-top{left:23px;right:23px;top:22px}.stage-top span:last-child{display:none}.story{left:23px;top:80px;width:calc(100% - 46px)}.story h2{font-size:30px;margin-bottom:15px}.story p{font-size:13.8px;line-height:2.08}.story .pullquote{font-size:14.5px}.stage-bottom{left:23px;bottom:17px}.lens{width:286px;height:163px}.hint-float{right:14px;top:17px;font-size:9px;padding:7px 10px}.controls-row{align-items:flex-start}.controls-note{font-size:11px}.controls{width:100%;justify-content:space-between}.button-section{margin-top:44px;padding-bottom:70px}.button-shell{padding:40px 25px;gap:34px;min-height:320px;justify-content:center;text-align:center;border-radius:26px}.button-copy{max-width:400px}.button-copy p{font-size:12px}.glass-button{width:230px;height:66px}.mode-text{right:17px;bottom:15px}.brand{font-size:17px}}
+  @media(max-width:390px){.story{left:18px;width:calc(100% - 36px)}.reading-stage{height:555px}.story h2{font-size:27px}.story p{font-size:13.4px}.lens{width:260px;height:149px}.hint-float{top:16px}.slider-wrap{gap:6px}input[type=range]{width:87px}}
   @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -115,8 +113,8 @@
     <a class="brand" href="./" aria-label="Liquid Glass Lab 主页"><span class="brand-symbol"><svg viewBox="0 0 32 32" fill="none"><path d="M16 2.8c4.7 6.9 9.2 10.3 9.2 16.9A9.2 9.2 0 1 1 6.8 19.7C6.8 13.1 11.3 9.7 16 2.8Z" fill="url(#logograd)" stroke="white" stroke-opacity=".85" stroke-width="1.3"/><path d="M11 18c0-3.2 1.1-5.7 3.5-8.9" stroke="white" stroke-width="2.6" stroke-linecap="round" opacity=".9"/><defs><linearGradient id="logograd" x1="6" y1="5" x2="27" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#C4B4FF"/><stop offset=".5" stop-color="#8D82E6"/><stop offset="1" stop-color="#E8AAD5"/></linearGradient></defs></svg></span> liquid<span style="color:#9081c1">/</span>glass</a>
     <div class="nav-right"><span class="nav-dot"></span>INTERACTIVE MATERIAL STUDY <span style="opacity:.4">/ 2026</span></div>
   </header>
-  <div class="intro"><div class="kicker">LIQUID GLASS EXPERIMENT</div><h1>让光，<em>拥有形状。</em></h1><p>不只是半透明的模糊。<br>试着拖动一块玻璃，看看文字如何在光线中弯曲、放大与流动。</p></div>
-  <div class="experiment-top"><div class="label-group"><span class="number-chip">01</span><span>自由折射 · DRAG THE LENS</span></div><span class="experiment-right">真实折射 / 柔焦 / 光谱色散</span></div>
+  <div class="intro"><div class="kicker">LIQUID GLASS EXPERIMENT</div><h1>让光，<em>拥有形状。</em></h1><p>不只是半透明的模糊。<br>试着拖动一块玻璃，看看文字如何在光线中弯曲、轻轻折射与流动。</p></div>
+  <div class="experiment-top"><div class="label-group"><span class="number-chip">01</span><span>自由折射 · DRAG THE LENS</span></div><span class="experiment-right">单层折射 / 清澈光感 / 边缘光泽</span></div>
   <section class="reading-stage" id="stage" aria-label="可拖动的液态玻璃放大镜实验区">
     <div class="stage-orb orb-one"></div><div class="stage-orb orb-two"></div>
     <div class="stage-top"><span>AN ESSAY ABOUT LIGHT</span><span>VOL. 001 / REFRACTION</span></div>
@@ -126,14 +124,13 @@
       <p>我们习惯透过玻璃观察世界，却很少意识到：<strong>透明，并不意味着什么都没有。</strong>当光穿过一片弯曲的表面，原本笔直的线条会偏转，文字会在边缘拉伸，颜色也会悄悄分离。</p>
       <p>真正迷人的玻璃，并不是在背景之上覆盖一层白色，而是让背景仿佛拥有了厚度。它聚集周围的光，也把轻微的变形留在边缘。</p>
       <div class="pullquote">“好的交互，不必向你解释物理，<br>它只需要让你相信：眼前的事物可以被触碰。”</div>
-      <p>试着把上面的椭圆拖过这段文字。注意镜片中央的<strong>细微放大</strong>，留意边缘流动的高光，以及玻璃移动时那一点点柔软的惯性。</p>
-      <p>这些细节叠加在一起，才让一块普通的平面，变成仿佛有重量、有温度、有弹性的材料。</p>
+      <p>拖动水滴，看光线如何流动。</p>
     </article>
     <div class="hint-float"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12V4a2 2 0 0 1 4 0v6m0-3a2 2 0 0 1 4 0v3m0-1a2 2 0 0 1 4 0v5c0 4-3 7-7 7h-1c-2 0-3-.6-4-2l-5-5a2 2 0 0 1 3-3l2 2"/></svg><span>按住椭圆自由拖动</span></div>
-    <div class="lens" id="lens" role="img" aria-label="可以用鼠标或触屏自由拖动的液态玻璃放大镜"><div class="lens-form"><div class="refraction"></div><div class="magnify" id="magnify"></div><div class="lens-fresnel"></div><div class="dispersion"></div><div class="lens-grip">DRAG ME ✦</div></div></div>
+    <div class="lens" id="lens" role="img" aria-label="可以用鼠标或触屏自由拖动的液态玻璃放大镜"><div class="lens-form"><div class="refraction"></div><div class="lens-fresnel"></div><div class="dispersion"></div><div class="lens-grip">DRAG ME ✦</div></div></div>
     <div class="stage-bottom">LIGHT BENDS. DETAILS MATTER.</div>
   </section>
-  <div class="controls-row"><div class="controls-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>移动镜片，观察文字与边缘的变化</span></div><div class="controls"><label class="slider-wrap" for="strength">折射强度 <input id="strength" type="range" min="5" max="75" value="42" aria-label="折射强度"><span id="strength-value">42</span></label><button type="button" class="mini-action" id="reset-lens">↺ &nbsp;重置位置</button></div></div>
+  <div class="controls-row"><div class="controls-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>移动镜片，观察文字与边缘的变化</span></div><div class="controls"><label class="slider-wrap" for="strength">折射强度 <input id="strength" type="range" min="0" max="60" value="29" aria-label="折射强度"><span id="strength-value">29</span></label><button type="button" class="mini-action" id="reset-lens">↺ &nbsp;重置位置</button></div></div>
   <section class="button-section"><div class="experiment-top"><div class="label-group"><span class="number-chip">02</span><span>液体按钮 · PRESS TO FEEL</span></div><span class="experiment-right">触碰响应 / 柔性变形 / 光泽流动</span></div>
     <div class="button-shell"><div class="button-copy"><div class="eyebrow">TACTILE GLASS / 02</div><h3>每一次触碰，<br>都应该有真实的反馈。</h3><p>把光线封进一个小小的按钮。移动鼠标，观察高光追随；点击它，感受挤压、回弹与色彩的流动。</p></div>
       <button id="glass-button" class="glass-button" type="button" aria-label="切换光线主题"><span class="btn-material"></span><span class="btn-contents"><span id="button-label">轻触，改变光线</span><span class="btn-arrow">↗</span></span></button><div class="mode-text" id="mode-label">AURORA MODE</div>
@@ -142,64 +139,59 @@
   <footer class="footer">LIQUID GLASS LAB · A CREATIVE WEB EXPERIMENT · NOT AFFILIATED WITH APPLE</footer>
 </div>
 <svg class="hidden-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><defs>
-<filter id="lens-optics" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feImage id="lens-map" href="" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map"/><feDisplacementMap in="SourceGraphic" in2="map" id="lens-shift-r" scale="-42" xChannelSelector="R" yChannelSelector="G" result="refractedR"/><feDisplacementMap in="SourceGraphic" in2="map" id="lens-shift-g" scale="-38" xChannelSelector="R" yChannelSelector="G" result="refractedG"/><feDisplacementMap in="SourceGraphic" in2="map" id="lens-shift-b" scale="-34" xChannelSelector="R" yChannelSelector="G" result="refractedB"/><feColorMatrix in="refractedR" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red"/><feColorMatrix in="refractedG" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green"/><feColorMatrix in="refractedB" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue"/><feBlend in="red" in2="green" mode="screen" result="rg"/><feBlend in="rg" in2="blue" mode="screen"/></filter>
+<filter id="lens-optics" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feImage id="lens-map" href="" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map"/><feDisplacementMap in="SourceGraphic" in2="map" id="lens-shift" scale="-29" xChannelSelector="R" yChannelSelector="G"/></filter>
 <filter id="button-optics" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feImage id="button-map" href="" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map"/><feDisplacementMap in="SourceGraphic" in2="map" scale="-24" xChannelSelector="R" yChannelSelector="G"/></filter>
 </defs></svg>
 <script>
 (()=>{'use strict';
  const $=s=>document.querySelector(s);
- const stage=$('#stage'),lens=$('#lens'),story=$('#story'),magnify=$('#magnify'),button=$('#glass-button');
- const clone=story.cloneNode(true);clone.removeAttribute('id');clone.classList.add('story-clone');clone.setAttribute('aria-hidden','true');magnify.appendChild(clone);
+ const stage=$('#stage'),lens=$('#lens'),button=$('#glass-button');
  const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  const chromium=/(Chrome|Chromium|Edg|OPR)\//.test(navigator.userAgent)&&!/(iPhone|iPad|iPod)/.test(navigator.userAgent);
  if(chromium) document.documentElement.classList.add('has-optics');
- let strength=42;
+ let strength=29;
  // Draw a normal-field lens map. A neutral interior transitions into a strong curved edge.
  function buildMap(w,h,rounded=false){
   const c=document.createElement('canvas');c.width=w;c.height=h;
   const ctx=c.getContext('2d',{willReadFrequently:true});const img=ctx.createImageData(w,h),a=img.data;
   const rx=w/2,ry=h/2;
+  const smooth=(a,b,v)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){
     const dx=(x+.5-rx)/rx,dy=(y+.5-ry)/ry;
-    let dirX,dirY,depth;
+    let dirX,dirY,r;
     if(rounded){
       const rr=h*.49, px=x+.5-rx,py=y+.5-ry,ax=Math.max(Math.abs(px)-(w/2-rr),0),ay=Math.max(Math.abs(py)-(h/2-rr),0);
-      const q=Math.hypot(ax,ay);depth=Math.max(0,(rr-q)/rr);dirX=q>.001?Math.sign(px)*ax/q:0;dirY=q>.001?Math.sign(py)*ay/q:Math.sign(py);
+      r=Math.hypot(ax,ay)/rr;let q=Math.hypot(ax,ay);dirX=q>.001?Math.sign(px)*ax/q:0;dirY=q>.001?Math.sign(py)*ay/q:Math.sign(py);
     }else{
-      const rad=Math.hypot(dx,dy);depth=Math.max(0,1-rad);dirX=rad>.001?dx/rad:0;dirY=rad>.001?dy/rad:0;
+      r=Math.hypot(dx,dy);dirX=r>.001?dx/r:0;dirY=r>.001?dy/r:0;
     }
-    const shell=Math.exp(-Math.pow((depth-.085)/.13,2))*.94+Math.exp(-Math.pow((depth-.3)/.26,2))*.13;
+    // Smooth center magnification and gentle edge compression, tapering to zero at silhouette.
+    const magnify=-.23*Math.exp(-Math.pow((r-.47)/.33,2));
+    const edge=.61*Math.exp(-Math.pow((r-.84)/.115,2));
+    const taper=1-smooth(.95,1.01,r);
+    const deflection=(magnify+edge)*taper;
     const idx=(y*w+x)*4;
-    a[idx]=Math.max(0,Math.min(255,Math.round(128+dirX*shell*122)));
-    a[idx+1]=Math.max(0,Math.min(255,Math.round(128+dirY*shell*122)));
+    a[idx]=Math.round(Math.max(0,Math.min(255,128+dirX*deflection*115)));
+    a[idx+1]=Math.round(Math.max(0,Math.min(255,128+dirY*deflection*115)));
     a[idx+2]=128;a[idx+3]=255;
   }
   ctx.putImageData(img,0,0);return c.toDataURL('image/png');
  }
- $('#lens-map').setAttribute('href',buildMap(332,176));$('#button-map').setAttribute('href',buildMap(242,69,true));
- function setStrength(n){strength=Number(n);$('#strength-value').textContent=String(strength);$('#lens-shift-r').setAttribute('scale',String(-strength-4));$('#lens-shift-g').setAttribute('scale',String(-strength));$('#lens-shift-b').setAttribute('scale',String(-strength+4));}
+ $('#lens-map').setAttribute('href',buildMap(328,184));$('#button-map').setAttribute('href',buildMap(242,69,true));
+ function setStrength(n){strength=Number(n);$('#strength-value').textContent=String(strength);$('#lens-shift').setAttribute('scale',String(-strength));}
  $('#strength').addEventListener('input',e=>setStrength(e.target.value));setStrength(strength);
  let pos={x:225,y:174},target={x:225,y:174},velocity={x:0,y:0},dragging=false,pointerId=null,pointerOffset={x:0,y:0},lastDrag={x:0,y:0,t:0};
- let lensSize={w:332,h:176},sceneSize={w:1100,h:525};
+ let lensSize={w:328,h:184},sceneSize={w:1100,h:525};
  const clamp=(n,a,b)=>Math.max(a,Math.min(n,b));
  function measure(reset=false){
   const scene=stage.getBoundingClientRect();sceneSize={w:stage.clientWidth,h:stage.clientHeight};lensSize={w:lens.offsetWidth,h:lens.offsetHeight};
   if(reset){target.x=clamp(sceneSize.w*.44-lensSize.w*.5,5,Math.max(5,sceneSize.w-lensSize.w-5));target.y=clamp(sceneSize.h*.53-lensSize.h*.5,5,Math.max(5,sceneSize.h-lensSize.h-5));pos={...target};}
   else{target.x=clamp(target.x,4,Math.max(4,sceneSize.w-lensSize.w-4));target.y=clamp(target.y,4,Math.max(4,sceneSize.h-lensSize.h-4));}
-  const rect=story.getBoundingClientRect();clone.style.width=rect.width+'px';
- }
- function moveClone(){
-  // The copy scales around the center of the lens, so text grows rather than merely blurring.
-  const stageRect=stage.getBoundingClientRect(),storyRect=story.getBoundingClientRect(),zoom=1.135;
-  const originX=storyRect.left-stageRect.left,originY=storyRect.top-stageRect.top;
-  const x=lensSize.w/2+(originX-(pos.x+lensSize.w/2))*zoom;
-  const y=lensSize.h/2+(originY-(pos.y+lensSize.h/2))*zoom;
-  clone.style.transform=`translate3d(${x}px,${y}px,0) scale(${zoom})`;
  }
  function animate(){
   if(reduceMotion){pos.x=target.x;pos.y=target.y;velocity.x=0;velocity.y=0;}
   else{
-   for(const axis of ['x','y']){const force=(target[axis]-pos[axis])*(dragging?.24:.105);velocity[axis]=(velocity[axis]+force)*(dragging?.68:.79);pos[axis]+=velocity[axis];if(Math.abs(target[axis]-pos[axis])<.035&&Math.abs(velocity[axis])<.035){pos[axis]=target[axis];velocity[axis]=0;}}
+   for(const axis of ['x','y']){const force=(target[axis]-pos[axis])*(dragging?.36:.105);velocity[axis]=(velocity[axis]+force)*(dragging?.62:.79);pos[axis]+=velocity[axis];if(Math.abs(target[axis]-pos[axis])<.035&&Math.abs(velocity[axis])<.035){pos[axis]=target[axis];velocity[axis]=0;}}
   }
   lens.style.transform=`translate3d(${pos.x}px,${pos.y}px,0)`;
   const speed=Math.hypot(velocity.x,velocity.y);
@@ -207,7 +199,7 @@
   lens.style.setProperty('--stretch',String(1+Math.min(speed*.003, .038)));
   lens.style.setProperty('--turn',(skew*18).toFixed(3)+'deg');
   lens.style.setProperty('--press',dragging?'.977':'1');
-  moveClone();requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
  }
  function point(e){const rect=stage.getBoundingClientRect();return {x:e.clientX-rect.left,y:e.clientY-rect.top};}
  lens.addEventListener('pointerdown',e=>{if(e.button!==0&&e.pointerType==='mouse')return;e.preventDefault();const p=point(e);pointerId=e.pointerId;dragging=true;lens.classList.add('dragging');pointerOffset={x:p.x-target.x,y:p.y-target.y};lastDrag={x:p.x,y:p.y,t:performance.now()};lens.setPointerCapture(e.pointerId);});
