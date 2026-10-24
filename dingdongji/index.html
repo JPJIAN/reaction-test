@@ -71,6 +71,17 @@
     .stat{padding:15px;background:#ffffff09;border:1px solid #ffffff0c;border-radius:12px}
     .stat-num{font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;margin-bottom:4px;color:#f4f1ff}
     .stat-num.green{color:var(--green)}
+    .sent-panel{background:radial-gradient(ellipse at 85% 10%,#9973fa26,transparent 70%),linear-gradient(135deg,#29213e,#1b192f);border:1px solid #a88afa48;border-radius:17px;padding:20px 22px;margin-bottom:24px;position:relative;overflow:hidden}
+    .sent-label{color:#bdb0e2;font-size:13px;font-weight:750;display:flex;gap:8px;align-items:center}
+    .sent-dot{width:9px;height:9px;background:#9790b1;border-radius:50%}
+    .sent-panel.active .sent-dot{background:var(--green);box-shadow:0 0 0 5px #73e4ad22;animation:pulse 1.2s infinite}
+    .sent-number-line{display:flex;align-items:baseline;gap:10px;padding-top:8px}
+    .sent-number{color:white;font-size:clamp(50px,6vw,73px);font-weight:950;letter-spacing:-2px;font-variant-numeric:tabular-nums;line-height:1.2;text-shadow:0 7px 26px #a17dff38}
+    .sent-unit{font-size:18px;color:#ccc1eb;font-weight:700}
+    .sent-caption{color:#a8a0bd;font-size:12px;margin-top:6px}
+    .sent-panel.complete .sent-number{color:var(--green)}
+    @media(max-width:520px){.sent-panel{padding:19px}.sent-number{font-size:60px}}
+
     .stat-label{font-size:11px;color:#9999b4}
     .console{margin-top:21px;background:#0a0c17;border-radius:12px;border:1px solid #343449;overflow:hidden}
     .console-header{padding:10px 14px;background:#1b1c2c;font-size:11px;color:#a6a4c2;display:flex;gap:10px;align-items:center}
@@ -119,10 +130,15 @@
       <section class="panel" aria-labelledby="status-heading">
         <div class="panel-head"><div class="panel-title" id="status-heading"><span class="icon">📡</span> 运行监控</div><span class="tag">MONITOR</span></div>
         <div class="panel-body">
-          <div class="status-top"><div id="statusIcon" class="status-icon" aria-hidden="true">💤</div><div><div id="statusTitle" class="status-title" role="status" aria-live="polite">等待轰炸</div><div id="statusDesc" class="status-description">输入号码开始轰炸</div></div></div>
+          <div class="status-top"><div id="statusIcon" class="status-icon" aria-hidden="true">⏳</div><div><div id="statusTitle" class="status-title" role="status" aria-live="polite">等待轰炸</div><div id="statusDesc" class="status-description">输入号码开始轰炸</div></div></div>
+          <div class="sent-panel" id="sentPanel">
+            <div class="sent-label"><span class="sent-dot"></span>已发送短信</div>
+            <div class="sent-number-line"><span id="sentCount" class="sent-number">0</span><span class="sent-unit">条</span></div>
+            <div id="sentCaption" class="sent-caption">尚未开始</div>
+          </div>
           <div class="progress-row"><span>轰炸进程</span><span id="percent" class="progress-percent">0%</span></div>
           <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="轰炸进程" id="progressTrack"><div id="progressFill" class="progress-fill"></div></div>
-          <div class="stats"><div class="stat"><div class="stat-num" id="events">0</div><div class="stat-label">运行步骤</div></div><div class="stat"><div class="stat-num green" id="runState">待机</div><div class="stat-label">当前状态</div></div></div>
+          <div class="stats"><div class="stat"><div class="stat-num" id="elapsed">00:00</div><div class="stat-label">运行时间</div></div><div class="stat"><div class="stat-num green" id="runState">待机</div><div class="stat-label">当前状态</div></div></div>
           <div class="console"><div class="console-header"><span class="console-dots"><span></span><span></span><span></span></span><span>chicken_console / 运行日志</span></div><div id="logs" class="console-lines" aria-live="off"><p><b>[READY]</b> 系统已就绪，等待指令……</p></div></div>
         </div>
       </section>
@@ -134,69 +150,100 @@
     (() => {
       'use strict';
       const $ = id => document.getElementById(id);
-      const form = $('demoForm'); const phone = $('phone'); const start = $('startBtn'); const stop = $('stopBtn');
-      const icon = $('statusIcon'); const title = $('statusTitle'); const desc = $('statusDesc');
-      const percent = $('percent'); const fill = $('progressFill'); const track = $('progressTrack');
-      const events = $('events'); const logs = $('logs'); const runState = $('runState');
-      let timer = null; let progress = 0; let eventCount = 0;
-      const messages = [
-        '系统状态已刷新',
-        '正在更新进度显示',
-        '控制台响应正常',
-        '当前任务持续运行',
-        '进度条更新完成',
-        '运行步骤已记录',
-        '面板数据已同步',
-        '等待下一次状态刷新'
+      const form = $('demoForm'), phone = $('phone'), start = $('startBtn'), stop = $('stopBtn');
+      const icon = $('statusIcon'), title = $('statusTitle'), desc = $('statusDesc');
+      const percent = $('percent'), fill = $('progressFill'), track = $('progressTrack');
+      const sentPanel = $('sentPanel'), sentCount = $('sentCount'), sentCaption = $('sentCaption');
+      const elapsed = $('elapsed'), runState = $('runState'), logs = $('logs');
+      let frame = null, startTime = 0, duration = 0, finalCount = 0, currentCount = 0, lastLog = 0;
+      const phases = [
+        '发送队列正在运行',
+        '状态反馈已更新',
+        '已完成一批发送任务',
+        '下一批任务正在处理',
+        '发送进度持续更新',
+        '系统任务记录已刷新'
       ];
       function writeLog(kind, message) {
         const row = document.createElement('p');
-        const tag = document.createElement(kind === 'SAFE' ? 'em' : 'b');
-        tag.textContent = `[${kind}]`;
-        row.append(tag, document.createTextNode(' ' + message));
+        const label = document.createElement('b');
+        label.textContent = '[' + kind + ']';
+        row.append(label, document.createTextNode(' ' + message));
         logs.appendChild(row);
         while (logs.children.length > 5) logs.removeChild(logs.firstChild);
         logs.scrollTop = logs.scrollHeight;
       }
-      function setProgress(value) {
-        progress = Math.max(0, Math.min(100, value));
-        percent.textContent = `${progress}%`;
-        fill.style.width = `${progress}%`;
-        track.setAttribute('aria-valuenow', String(progress));
+      function setProgress(p) {
+        p = Math.min(100, Math.max(0, p));
+        percent.textContent = Math.floor(p) + '%';
+        fill.style.width = p + '%';
+        track.setAttribute('aria-valuenow', String(Math.floor(p)));
+      }
+      function setCount(n) {
+        currentCount = Math.max(0, Math.floor(n));
+        sentCount.textContent = currentCount.toLocaleString('zh-CN');
+      }
+      function setTime(ms) {
+        const t = Math.floor(ms / 1000);
+        elapsed.textContent = String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
       }
       function setState(state) {
         const active = state === 'running';
         start.disabled = active; stop.disabled = !active; phone.disabled = active;
         icon.classList.toggle('active', active);
+        sentPanel.classList.toggle('active', active);
+        sentPanel.classList.toggle('complete', state === 'done');
         const states = {
-          idle: ['⏳','等待轰炸','输入号码开始轰炸'],
-          running: ['⚡','正在运行','轰炸进程正在更新'],
-          stopped: ['🛑','已停止','本次运行已停止'],
-          done: ['✅','运行结束','本次进程已完成'],
-          invalid: ['⚠️','号码格式不正确','请输入 11 位手机号']
+          idle:['⏳','等待轰炸','输入号码开始轰炸','待机','尚未开始'],
+          running:['⚡','正在轰炸','正在处理发送进程','发送中','发送进行中…'],
+          stopped:['🛑','已停止','发送进程已停止','已停止','发送已停止'],
+          done:['✅','轰炸结束','本次发送进程已完成','已完成','发送完成'],
+          invalid:['⚠️','号码格式不正确','请输入 11 位手机号','待机','请输入正确号码']
         };
-        [icon.textContent,title.textContent,desc.textContent] = states[state];
-        runState.textContent = {idle:"待机",running:"运行中",stopped:"已停止",done:"已完成",invalid:"待机"}[state];
+        const a = states[state];
+        icon.textContent=a[0];title.textContent=a[1];desc.textContent=a[2];
+        runState.textContent=a[3];sentCaption.textContent=a[4];
       }
-      function clearTimer() {if (timer !== null) {clearInterval(timer);timer = null;}}
-      form.addEventListener('submit', ev => {
-        ev.preventDefault();
-        if (timer !== null) return;
-        if (!/^1\d{10}$/.test(phone.value.trim())) {setState('invalid');phone.focus();return;}
-        setProgress(0);eventCount = 0;events.textContent = '0';logs.replaceChildren();
-        setState('running');
-        writeLog('START','已开始运行，进度显示已启动');
-        writeLog('SYSTEM','状态：运行中');
-        timer = setInterval(() => {
-          eventCount += 1; events.textContent = String(eventCount);
-          setProgress(Math.min(100,progress + Math.floor(Math.random() * 6) + 3));
-          if (eventCount % 2 === 0) writeLog('SYSTEM',messages[(eventCount / 2 - 1) % messages.length]);
-          if (progress === 100) {clearTimer();setState('done');writeLog('DONE','当前进程已结束');}
-        }, 430);
+      function stopFrame(){
+        if(frame!==null){cancelAnimationFrame(frame);frame=null;}
+      }
+      function tick(now) {
+        const f = Math.min(1, Math.max(0, (now-startTime)/duration));
+        setCount(f>=1?finalCount:finalCount*f);
+        setProgress(100*f);
+        setTime(duration*f);
+        const bucket=Math.floor(f*9);
+        if(bucket>lastLog && bucket<9){
+          lastLog=bucket;
+          writeLog('SEND',phases[(bucket-1)%phases.length]+' · 已发送 '+currentCount+' 条');
+        }
+        if(f>=1){
+          frame=null;setState('done');
+          writeLog('DONE','已发送 '+finalCount+' 条，任务完成');
+          return;
+        }
+        frame=requestAnimationFrame(tick);
+      }
+      form.addEventListener('submit', (event)=>{
+        event.preventDefault();
+        if(frame!==null)return;
+        if(!/^1\d{10}$/.test(phone.value.trim())){setState('invalid');phone.focus();return;}
+        stopFrame();
+        finalCount=500+Math.floor(Math.random()*101);
+        duration=15500+Math.floor(Math.random()*4001);
+        lastLog=0;setCount(0);setProgress(0);setTime(0);
+        logs.replaceChildren();setState('running');
+        writeLog('START','发送任务已启动');
+        startTime=performance.now();
+        frame=requestAnimationFrame(tick);
       });
-      stop.addEventListener('click', () => {if(timer === null)return;clearTimer();setState('stopped');writeLog('STOP','当前进程已手动停止');});
-      phone.addEventListener('input', () => {phone.value = phone.value.replace(/\D/g,'').slice(0,11);});
-      window.addEventListener('pagehide',clearTimer);
+      stop.addEventListener('click',()=>{
+        if(frame===null)return;
+        stopFrame();setState('stopped');
+        writeLog('STOP','任务已停止，已发送 '+currentCount+' 条');
+      });
+      phone.addEventListener('input',()=>{phone.value=phone.value.replace(/\D/g,'').slice(0,11);});
+      window.addEventListener('pagehide',stopFrame);
     })();
   </script>
 </body>
