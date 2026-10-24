@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0b17" />
+  <meta name="description" content="叮咚鸡短信测压：一个纯前端娱乐模拟网页。不会发送任何短信，也不会收集或上传手机号。" />
+  <title>叮咚鸡短信测压 | 娱乐模拟器</title>
+  <style>
+    :root{--bg:#0b0b17;--panel:#151627;--line:#323349;--muted:#a3a4b7;--white:#f8f7ff;--yellow:#ffdc65;--violet:#9a80ff;--pink:#ff78b7;--green:#73e4ad}
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;color:var(--white);font-family:Inter,-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft Yahei",sans-serif;background:radial-gradient(ellipse at 12% 12%,#282146 0,transparent 38%),radial-gradient(ellipse at 88% 73%,#1c2046 0,transparent 37%),var(--bg);overflow-x:hidden}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;background-image:linear-gradient(#7778b3 1px,transparent 1px),linear-gradient(90deg,#7778b3 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,black,transparent 78%)}
+    button,input{font:inherit} button{cursor:pointer}
+    .wrap{max-width:1120px;margin:auto;padding:0 28px;position:relative;z-index:1}
+    .header{height:93px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ffffff15}
+    .brand{display:flex;align-items:center;gap:13px;font-size:22px;font-weight:900;letter-spacing:.2px}
+    .brand-icon{display:grid;place-items:center;width:45px;height:45px;border-radius:16px;background:var(--yellow);box-shadow:0 6px 28px #ffdc6530;font-size:28px}
+    .header-meta{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+    .live-dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px #73e4ad1d}
+    .hero{display:grid;grid-template-columns:1.16fr .84fr;align-items:center;gap:35px;padding-top:75px;padding-bottom:50px}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;color:var(--yellow);font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;background:#ffdc6514;border:1px solid #ffdc653b;padding:10px 13px;border-radius:100px}
+    h1{font-size:clamp(40px,5.7vw,76px);line-height:1.13;letter-spacing:-2.3px;margin:24px 0 18px;font-weight:1000}
+    h1 .highlight{background:linear-gradient(90deg,#ffdc65,#ff9fa8 70%,#ae91ff);color:transparent;background-clip:text}
+    .hero-desc{font-size:16px;line-height:1.85;color:#babbd0;max-width:530px;margin:0}
+    .chips{margin-top:26px;display:flex;flex-wrap:wrap;gap:9px}
+    .chip{padding:9px 12px;font-size:12px;color:#d0cfe0;border:1px solid #ffffff1d;border-radius:100px;background:#ffffff08}
+    .chicken-scene{min-height:320px;display:grid;place-items:center;position:relative}
+    .orbit{width:min(29vw,308px);height:min(29vw,308px);min-width:242px;min-height:242px;border-radius:50%;display:grid;place-items:center;position:relative;background:radial-gradient(circle at 35% 30%,#463777,#282040 58%,#171729 85%);box-shadow:0 0 0 22px #9275f210,0 0 0 55px #9275f207,0 40px 70px #0005;border:1px solid #bd95ff59}
+    .orbit::before,.orbit::after{content:"";position:absolute;border-radius:50%;border:1px dashed #b398fa50;inset:-27px;animation:spin 30s linear infinite}
+    .orbit::after{inset:-54px;animation-direction:reverse;animation-duration:46s;opacity:.6}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .chicken{font-size:130px;filter:drop-shadow(0 15px 15px #140c3155);animation:float 3.2s ease-in-out infinite;user-select:none}
+    @keyframes float{50%{transform:translateY(-14px) rotate(-3deg)}}
+    .bubble{position:absolute;background:#27263e;border:1px solid #aaa3fa3d;border-radius:12px;padding:10px 13px;font-weight:800;box-shadow:0 12px 20px #0005;white-space:nowrap;animation:float 4s ease-in-out infinite}
+    .bubble.one{left:-48px;top:36px;color:var(--yellow);transform:rotate(-7deg)}
+    .bubble.two{right:-50px;bottom:44px;color:#ecb6ff;animation-delay:1s}
+    .workspace{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:21px;padding-bottom:34px}
+    .panel{background:linear-gradient(155deg,#1b1a2e,#121322);border:1px solid #ffffff1b;box-shadow:0 25px 70px #0000003c;border-radius:22px;overflow:hidden}
+    .panel-head{padding:23px 27px;border-bottom:1px solid #ffffff13;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .panel-title{display:flex;gap:10px;align-items:center;font-size:16px;font-weight:800}
+    .panel-title .icon{font-size:20px}
+    .tag{font-size:11px;letter-spacing:.4px;color:#c6b7ff;background:#8f6efd1c;border:1px solid #8f6efd4d;padding:7px 10px;border-radius:100px;white-space:nowrap}
+    .panel-body{padding:28px 27px}
+    .label{display:block;color:#d3d1e2;font-size:13px;font-weight:700;margin-bottom:12px}
+    .phone-field{display:flex;gap:11px;align-items:center;border:1px solid #615a85;background:#0e1020;border-radius:13px;padding:0 16px;transition:border-color .2s,box-shadow .2s}
+    .phone-field:focus-within{border-color:var(--violet);box-shadow:0 0 0 4px #9a80ff24}
+    .prefix{font-weight:800;font-size:14px;color:#beb9d9;border-right:1px solid #4a4966;padding-right:13px;flex-shrink:0}
+    #phone{min-width:0;outline:none;border:none;color:white;background:transparent;height:58px;width:100%;font-size:17px;letter-spacing:1.7px}
+    #phone::placeholder{color:#6f708b;font-size:13px;letter-spacing:0}
+    .hint{color:#82839e;font-size:12px;margin:11px 0 23px;line-height:1.6}
+    .buttons{display:grid;grid-template-columns:1fr 148px;gap:12px}
+    .primary,.secondary{border-radius:12px;min-height:55px;font-weight:850;transition:transform .18s,opacity .18s,box-shadow .18s}
+    .primary{color:#262036;background:linear-gradient(115deg,var(--yellow),#ffb971);border:0;box-shadow:0 11px 28px #f9bb5740;font-size:16px}
+    .secondary{color:#e6e4f7;background:#ffffff0b;border:1px solid #ffffff2a;font-size:15px}
+    .primary:not(:disabled):hover,.secondary:not(:disabled):hover{transform:translateY(-2px)}
+    button:disabled{opacity:.36;cursor:not-allowed;box-shadow:none}
+    .notice{display:flex;align-items:flex-start;gap:9px;margin-top:22px;background:#9a80ff12;border:1px solid #9a80ff29;border-radius:11px;padding:13px 14px;color:#b9b3d1;font-size:12px;line-height:1.7}
+    .notice .sparkle{font-size:17px;flex-shrink:0}
+    .status-top{display:flex;gap:13px;align-items:center;margin:0 0 25px}
+    .status-icon{width:48px;height:48px;display:grid;place-items:center;background:#454158;border-radius:14px;font-size:24px;flex-shrink:0;transition:background .2s}
+    .status-icon.active{background:#3d365b;animation:pulse 1.4s ease-in-out infinite}
+    @keyframes pulse{50%{box-shadow:0 0 0 8px #9a80ff16}}
+    .status-title{font-size:18px;font-weight:850;margin-bottom:3px}
+    .status-description{font-size:12px;color:#9595b1;line-height:1.5}
+    .progress-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;font-size:12px;color:#c1bfd8}
+    .progress-percent{font-weight:850;font-size:16px;color:#ffd875;font-variant-numeric:tabular-nums}
+    .progress-track{height:10px;border-radius:100px;background:#313046;overflow:hidden}
+    .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#a78bff,#ffd568);border-radius:100px;transition:width .4s ease}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:24px}
+    .stat{padding:15px;background:#ffffff09;border:1px solid #ffffff0c;border-radius:12px}
+    .stat-num{font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;margin-bottom:4px;color:#f4f1ff}
+    .stat-num.green{color:var(--green)}
+    .stat-label{font-size:11px;color:#9999b4}
+    .console{margin-top:21px;background:#0a0c17;border-radius:12px;border:1px solid #343449;overflow:hidden}
+    .console-header{padding:10px 14px;background:#1b1c2c;font-size:11px;color:#a6a4c2;display:flex;gap:10px;align-items:center}
+    .console-dots{display:flex;gap:5px}.console-dots span{width:7px;height:7px;background:#fa7d89;border-radius:50%}.console-dots span:nth-child(2){background:#ffce70}.console-dots span:nth-child(3){background:#6fdda0}
+    .console-lines{padding:14px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;min-height:118px;max-height:118px;overflow:auto;font-size:11px;color:#9eacc9;line-height:1.7}
+    .console-lines p{margin:0 0 3px;overflow-wrap:anywhere}.console-lines b{color:#9d85f4;font-weight:700}.console-lines em{color:#82d9ad;font-style:normal}
+    .footer{border-top:1px solid #ffffff1a;padding:25px 0 42px;display:flex;justify-content:space-between;gap:15px;font-size:12px;color:#89899f;line-height:1.7}
+    .footer strong{color:#cac8df}
+    .foot-badge{border:1px solid #ffffff26;border-radius:100px;padding:6px 11px;align-self:center;white-space:nowrap}
+    @media(max-width:850px){.hero{grid-template-columns:1fr;padding-top:49px;gap:10px}.chicken-scene{min-height:250px}.orbit{width:225px;height:225px;min-width:225px;min-height:225px}.chicken{font-size:105px}.bubble.one{left:-36px}.bubble.two{right:-35px}.workspace{grid-template-columns:1fr}}
+    @media(max-width:520px){.wrap{padding:0 17px}.header{height:75px}.brand{font-size:17px}.brand-icon{width:38px;height:38px;font-size:24px}.header-meta{font-size:11px}.hero{padding-top:39px;padding-bottom:31px}h1{font-size:42px;letter-spacing:-1.8px}.hero-desc{font-size:14px}.chips{margin-top:20px}.chicken-scene{min-height:252px}.panel-head{padding:19px 19px}.panel-body{padding:21px 19px}.buttons{grid-template-columns:1fr 111px}.primary,.secondary{font-size:14px;min-height:52px}.footer{flex-direction:column}.foot-badge{align-self:flex-start}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <div class="brand"><span class="brand-icon" aria-hidden="true">🐔</span><span>叮咚鸡 <span style="color:#f7d96f">LAB</span></span></div>
+      <div class="header-meta"><span class="live-dot"></span> 纯娱乐模拟 · 0 短信发送</div>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div>
+        <div class="eyebrow">⚡ DING DONG JI / SIMULATOR</div>
+        <h1 id="hero-title">叮咚鸡<br><span class="highlight">短信测压</span></h1>
+        <p class="hero-desc">你负责输入号码，小鸡负责表演。体验赛博世界的「叮咚叮咚」——所有进度和日志都是动画效果，现实中一条短信也不会发出。</p>
+        <div class="chips"><span class="chip">🐣 小鸡出品</span><span class="chip">🎮 交互式整蛊演示</span><span class="chip">🛡️ 零短信 · 零上传</span></div>
+      </div>
+      <div class="chicken-scene" aria-hidden="true">
+        <div class="orbit"><span class="chicken">🐔</span><span class="bubble one">叮咚！🔔</span><span class="bubble two">🐤 鸡你太美</span></div>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <section class="panel" aria-labelledby="control-heading">
+        <div class="panel-head"><div class="panel-title" id="control-heading"><span class="icon">🎛️</span> 控制中心</div><span class="tag">DEMO MODE</span></div>
+        <div class="panel-body">
+          <form id="demoForm" novalidate>
+            <label class="label" for="phone">目标手机号 <span style="color:#777990;font-weight:400">/ 仅用于前端演示</span></label>
+            <div class="phone-field"><span class="prefix">🇨🇳 +86</span><input id="phone" type="tel" inputmode="numeric" maxlength="11" placeholder="输入 11 位号码开始体验" autocomplete="off" aria-describedby="phoneHint" /></div>
+            <p class="hint" id="phoneHint">号码仅在当前浏览器内用于格式检查，不会保存，也不会被发送到服务器。可以输入虚构号码体验。</p>
+            <div class="buttons"><button class="primary" id="startBtn" type="submit">🚀 开始轰炸</button><button class="secondary" id="stopBtn" type="button" disabled>⏹ 停止</button></div>
+          </form>
+          <div class="notice" role="note"><span class="sparkle">✨</span><span><strong style="color:#e4dbff">整蛊演示说明：</strong>本站只展示按钮、进度条与虚构日志。没有验证码接口、没有后台短信服务，不会向任何号码发送消息。</span></div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="status-heading">
+        <div class="panel-head"><div class="panel-title" id="status-heading"><span class="icon">📡</span> 运行监控</div><span class="tag">VISUAL ONLY</span></div>
+        <div class="panel-body">
+          <div class="status-top"><div id="statusIcon" class="status-icon" aria-hidden="true">💤</div><div><div id="statusTitle" class="status-title" role="status" aria-live="polite">等待小鸡起床</div><div id="statusDesc" class="status-description">输入号码并点击开始，观看模拟动画</div></div></div>
+          <div class="progress-row"><span>模拟演示进度</span><span id="percent" class="progress-percent">0%</span></div>
+          <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="模拟演示进度" id="progressTrack"><div id="progressFill" class="progress-fill"></div></div>
+          <div class="stats"><div class="stat"><div class="stat-num" id="events">0</div><div class="stat-label">模拟动画事件</div></div><div class="stat"><div class="stat-num green">0</div><div class="stat-label">真实发送短信数 · 永远为 0</div></div></div>
+          <div class="console"><div class="console-header"><span class="console-dots"><span></span><span></span><span></span></span><span>chicken_console / 演示日志</span></div><div id="logs" class="console-lines" aria-live="off"><p><b>[READY]</b> 小鸡正在打盹，等待指令……</p><p><em>[SAFE]</em> 当前页面无短信发送功能。</p></div></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer"><span><strong>叮咚鸡短信测压</strong> © 2026 · 一个认真做得很像真的娱乐网页<br>本站不提供任何真实短信轰炸、短信测压或第三方通信服务。</span><span class="foot-badge">🐔 Powered by Chicken Energy</span></footer>
+  </div>
+  <script>
+    (() => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      const form = $('demoForm'); const phone = $('phone'); const start = $('startBtn'); const stop = $('stopBtn');
+      const icon = $('statusIcon'); const title = $('statusTitle'); const desc = $('statusDesc');
+      const percent = $('percent'); const fill = $('progressFill'); const track = $('progressTrack');
+      const events = $('events'); const logs = $('logs');
+      let timer = null; let progress = 0; let eventCount = 0;
+      const messages = [
+        '小鸡戴上耳机，开始假装努力工作',
+        '模拟任务队列正在跳舞 🐤',
+        '虚拟铃声：叮咚！叮咚！',
+        '进度条非常忙，真实短信数仍为 0',
+        '已生成一份空气味的模拟报告',
+        '小鸡正在以每秒八百次的速度眨眼',
+        '友情提醒：本网站不连接短信 API',
+        '模拟世界风平浪静，现实号码毫无影响'
+      ];
+      function writeLog(kind, message) {
+        const row = document.createElement('p');
+        const tag = document.createElement(kind === 'SAFE' ? 'em' : 'b');
+        tag.textContent = `[${kind}]`;
+        row.append(tag, document.createTextNode(' ' + message));
+        logs.appendChild(row);
+        while (logs.children.length > 5) logs.removeChild(logs.firstChild);
+        logs.scrollTop = logs.scrollHeight;
+      }
+      function setProgress(value) {
+        progress = Math.max(0, Math.min(100, value));
+        percent.textContent = `${progress}%`;
+        fill.style.width = `${progress}%`;
+        track.setAttribute('aria-valuenow', String(progress));
+      }
+      function setState(state) {
+        const active = state === 'running';
+        start.disabled = active; stop.disabled = !active; phone.disabled = active;
+        icon.classList.toggle('active', active);
+        const states = {
+          idle: ['💤','等待小鸡起床','输入号码并点击开始，观看模拟动画'],
+          running: ['🐥','小鸡正在表演中…','只有页面特效在运行，不会发送短信'],
+          stopped: ['🛑','演示已停止','小鸡安全下班，真实短信发送数：0'],
+          done: ['🎉','模拟任务完成！','恭喜体验完整段演示，真实短信发送数：0'],
+          invalid: ['🤔','号码格式不对哦','请输入 11 位数字；不会发送或保存号码']
+        };
+        [icon.textContent,title.textContent,desc.textContent] = states[state];
+      }
+      function clearTimer() {if (timer !== null) {clearInterval(timer);timer = null;}}
+      form.addEventListener('submit', ev => {
+        ev.preventDefault();
+        if (timer !== null) return;
+        if (!/^1\d{10}$/.test(phone.value.trim())) {setState('invalid');phone.focus();return;}
+        setProgress(0);eventCount = 0;events.textContent = '0';logs.replaceChildren();
+        setState('running');
+        writeLog('DEMO','模拟已启动，号码未离开当前页面');
+        writeLog('SAFE','真实短信发送数固定为 0');
+        timer = setInterval(() => {
+          eventCount += 1; events.textContent = String(eventCount);
+          setProgress(Math.min(100,progress + Math.floor(Math.random() * 6) + 3));
+          if (eventCount % 2 === 0) writeLog('DEMO',messages[(eventCount / 2 - 1) % messages.length]);
+          if (progress === 100) {clearTimer();setState('done');writeLog('DONE','模拟结束：没有短信被发送');}
+        }, 430);
+      });
+      stop.addEventListener('click', () => {if(timer === null)return;clearTimer();setState('stopped');writeLog('STOP','演示已手动停止；现实世界没有发生短信行为');});
+      phone.addEventListener('input', () => {phone.value = phone.value.replace(/\D/g,'').slice(0,11);});
+      window.addEventListener('pagehide',clearTimer);
+    })();
+  </script>
+</body>
+</html>
