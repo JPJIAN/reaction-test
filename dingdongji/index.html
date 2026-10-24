@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0b0b17" />
-  <meta name="description" content="叮咚鸡短信测压：一个纯前端娱乐模拟网页。不会发送任何短信，也不会收集或上传手机号。" />
-  <title>叮咚鸡短信测压 | 娱乐模拟器</title>
+  <meta name="description" content="叮咚鸡短信测压：在线交互测试页面，提供手机号输入、启动停止和进度展示。" />
+  <title>叮咚鸡短信测压</title>
   <style>
     :root{--bg:#0b0b17;--panel:#151627;--line:#323349;--muted:#a3a4b7;--white:#f8f7ff;--yellow:#ffdc65;--violet:#9a80ff;--pink:#ff78b7;--green:#73e4ad}
     *{box-sizing:border-box} html{scroll-behavior:smooth}
@@ -89,15 +89,15 @@
   <div class="wrap">
     <header class="header">
       <div class="brand"><span class="brand-icon" aria-hidden="true">🐔</span><span>叮咚鸡 <span style="color:#f7d96f">LAB</span></span></div>
-      <div class="header-meta"><span class="live-dot"></span> 纯娱乐模拟 · 0 短信发送</div>
+      <div class="header-meta"><span class="live-dot"></span> 在线测试 · 控制面板</div>
     </header>
 
     <section class="hero" aria-labelledby="hero-title">
       <div>
-        <div class="eyebrow">⚡ DING DONG JI / SIMULATOR</div>
+        <div class="eyebrow">⚡ DING DONG JI / TEST CENTER</div>
         <h1 id="hero-title">叮咚鸡<br><span class="highlight">短信测压</span></h1>
-        <p class="hero-desc">你负责输入号码，小鸡负责表演。体验赛博世界的「叮咚叮咚」——所有进度和日志都是动画效果，现实中一条短信也不会发出。</p>
-        <div class="chips"><span class="chip">🐣 小鸡出品</span><span class="chip">🎮 交互式整蛊演示</span><span class="chip">🛡️ 零短信 · 零上传</span></div>
+        <p class="hero-desc">对付老赖，欠钱不还，老板，输入号码一键轰炸</p>
+        <div class="chips"><span class="chip">🐣 叮咚鸡出品</span><span class="chip">⚡ 一键启动</span><span class="chip">🛑 随时停止</span></div>
       </div>
       <div class="chicken-scene" aria-hidden="true">
         <div class="orbit"><span class="chicken">🐔</span><span class="bubble one">叮咚！🔔</span><span class="bubble two">🐤 鸡你太美</span></div>
@@ -106,31 +106,29 @@
 
     <main class="workspace">
       <section class="panel" aria-labelledby="control-heading">
-        <div class="panel-head"><div class="panel-title" id="control-heading"><span class="icon">🎛️</span> 控制中心</div><span class="tag">DEMO MODE</span></div>
+        <div class="panel-head"><div class="panel-title" id="control-heading"><span class="icon">🎛️</span> 控制中心</div><span class="tag">CONTROL</span></div>
         <div class="panel-body">
           <form id="demoForm" novalidate>
-            <label class="label" for="phone">目标手机号 <span style="color:#777990;font-weight:400">/ 仅用于前端演示</span></label>
-            <div class="phone-field"><span class="prefix">🇨🇳 +86</span><input id="phone" type="tel" inputmode="numeric" maxlength="11" placeholder="输入 11 位号码开始体验" autocomplete="off" aria-describedby="phoneHint" /></div>
-            <p class="hint" id="phoneHint">号码仅在当前浏览器内用于格式检查，不会保存，也不会被发送到服务器。可以输入虚构号码体验。</p>
+            <label class="label" for="phone">目标手机号</label>
+            <div class="phone-field"><span class="prefix">🇨🇳 +86</span><input id="phone" type="tel" inputmode="numeric" maxlength="11" placeholder="输入 11 位手机号" autocomplete="off" /></div>
             <div class="buttons"><button class="primary" id="startBtn" type="submit">🚀 开始轰炸</button><button class="secondary" id="stopBtn" type="button" disabled>⏹ 停止</button></div>
           </form>
-          <div class="notice" role="note"><span class="sparkle">⚠️</span><span>仅供测试，请勿用来骚扰他人</span></div>
         </div>
       </section>
 
       <section class="panel" aria-labelledby="status-heading">
-        <div class="panel-head"><div class="panel-title" id="status-heading"><span class="icon">📡</span> 运行监控</div><span class="tag">VISUAL ONLY</span></div>
+        <div class="panel-head"><div class="panel-title" id="status-heading"><span class="icon">📡</span> 运行监控</div><span class="tag">MONITOR</span></div>
         <div class="panel-body">
-          <div class="status-top"><div id="statusIcon" class="status-icon" aria-hidden="true">💤</div><div><div id="statusTitle" class="status-title" role="status" aria-live="polite">等待小鸡起床</div><div id="statusDesc" class="status-description">输入号码并点击开始，观看模拟动画</div></div></div>
-          <div class="progress-row"><span>模拟演示进度</span><span id="percent" class="progress-percent">0%</span></div>
-          <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="模拟演示进度" id="progressTrack"><div id="progressFill" class="progress-fill"></div></div>
-          <div class="stats"><div class="stat"><div class="stat-num" id="events">0</div><div class="stat-label">模拟动画事件</div></div><div class="stat"><div class="stat-num green">0</div><div class="stat-label">真实发送短信数 · 永远为 0</div></div></div>
-          <div class="console"><div class="console-header"><span class="console-dots"><span></span><span></span><span></span></span><span>chicken_console / 演示日志</span></div><div id="logs" class="console-lines" aria-live="off"><p><b>[READY]</b> 小鸡正在打盹，等待指令……</p><p><em>[SAFE]</em> 当前页面无短信发送功能。</p></div></div>
+          <div class="status-top"><div id="statusIcon" class="status-icon" aria-hidden="true">💤</div><div><div id="statusTitle" class="status-title" role="status" aria-live="polite">等待轰炸</div><div id="statusDesc" class="status-description">输入号码开始轰炸</div></div></div>
+          <div class="progress-row"><span>轰炸进程</span><span id="percent" class="progress-percent">0%</span></div>
+          <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="轰炸进程" id="progressTrack"><div id="progressFill" class="progress-fill"></div></div>
+          <div class="stats"><div class="stat"><div class="stat-num" id="events">0</div><div class="stat-label">运行步骤</div></div><div class="stat"><div class="stat-num green" id="runState">待机</div><div class="stat-label">当前状态</div></div></div>
+          <div class="console"><div class="console-header"><span class="console-dots"><span></span><span></span><span></span></span><span>chicken_console / 运行日志</span></div><div id="logs" class="console-lines" aria-live="off"><p><b>[READY]</b> 系统已就绪，等待指令……</p></div></div>
         </div>
       </section>
     </main>
 
-    <footer class="footer"><span><strong>叮咚鸡短信测压</strong> © 2026 · 一个认真做得很像真的娱乐网页<br>本站不提供任何真实短信轰炸、短信测压或第三方通信服务。</span><span class="foot-badge">🐔 Powered by Chicken Energy</span></footer>
+    <footer class="footer"><span><strong>叮咚鸡短信测压</strong> © 2026<br>仅供个人测试，请勿用于违法</span><span class="foot-badge">🐔 Powered by Chicken Energy</span></footer>
   </div>
   <script>
     (() => {
@@ -139,17 +137,17 @@
       const form = $('demoForm'); const phone = $('phone'); const start = $('startBtn'); const stop = $('stopBtn');
       const icon = $('statusIcon'); const title = $('statusTitle'); const desc = $('statusDesc');
       const percent = $('percent'); const fill = $('progressFill'); const track = $('progressTrack');
-      const events = $('events'); const logs = $('logs');
+      const events = $('events'); const logs = $('logs'); const runState = $('runState');
       let timer = null; let progress = 0; let eventCount = 0;
       const messages = [
-        '小鸡戴上耳机，开始假装努力工作',
-        '模拟任务队列正在跳舞 🐤',
-        '虚拟铃声：叮咚！叮咚！',
-        '进度条非常忙，真实短信数仍为 0',
-        '已生成一份空气味的模拟报告',
-        '小鸡正在以每秒八百次的速度眨眼',
-        '友情提醒：本网站不连接短信 API',
-        '模拟世界风平浪静，现实号码毫无影响'
+        '系统状态已刷新',
+        '正在更新进度显示',
+        '控制台响应正常',
+        '当前任务持续运行',
+        '进度条更新完成',
+        '运行步骤已记录',
+        '面板数据已同步',
+        '等待下一次状态刷新'
       ];
       function writeLog(kind, message) {
         const row = document.createElement('p');
@@ -171,13 +169,14 @@
         start.disabled = active; stop.disabled = !active; phone.disabled = active;
         icon.classList.toggle('active', active);
         const states = {
-          idle: ['💤','等待小鸡起床','输入号码并点击开始，观看模拟动画'],
-          running: ['🐥','小鸡正在表演中…','只有页面特效在运行，不会发送短信'],
-          stopped: ['🛑','演示已停止','小鸡安全下班，真实短信发送数：0'],
-          done: ['🎉','模拟任务完成！','恭喜体验完整段演示，真实短信发送数：0'],
-          invalid: ['🤔','号码格式不对哦','请输入 11 位数字；不会发送或保存号码']
+          idle: ['⏳','等待轰炸','输入号码开始轰炸'],
+          running: ['⚡','正在运行','轰炸进程正在更新'],
+          stopped: ['🛑','已停止','本次运行已停止'],
+          done: ['✅','运行结束','本次进程已完成'],
+          invalid: ['⚠️','号码格式不正确','请输入 11 位手机号']
         };
         [icon.textContent,title.textContent,desc.textContent] = states[state];
+        runState.textContent = {idle:"待机",running:"运行中",stopped:"已停止",done:"已完成",invalid:"待机"}[state];
       }
       function clearTimer() {if (timer !== null) {clearInterval(timer);timer = null;}}
       form.addEventListener('submit', ev => {
@@ -186,16 +185,16 @@
         if (!/^1\d{10}$/.test(phone.value.trim())) {setState('invalid');phone.focus();return;}
         setProgress(0);eventCount = 0;events.textContent = '0';logs.replaceChildren();
         setState('running');
-        writeLog('DEMO','模拟已启动，号码未离开当前页面');
-        writeLog('SAFE','真实短信发送数固定为 0');
+        writeLog('START','已开始运行，进度显示已启动');
+        writeLog('SYSTEM','状态：运行中');
         timer = setInterval(() => {
           eventCount += 1; events.textContent = String(eventCount);
           setProgress(Math.min(100,progress + Math.floor(Math.random() * 6) + 3));
-          if (eventCount % 2 === 0) writeLog('DEMO',messages[(eventCount / 2 - 1) % messages.length]);
-          if (progress === 100) {clearTimer();setState('done');writeLog('DONE','模拟结束：没有短信被发送');}
+          if (eventCount % 2 === 0) writeLog('SYSTEM',messages[(eventCount / 2 - 1) % messages.length]);
+          if (progress === 100) {clearTimer();setState('done');writeLog('DONE','当前进程已结束');}
         }, 430);
       });
-      stop.addEventListener('click', () => {if(timer === null)return;clearTimer();setState('stopped');writeLog('STOP','演示已手动停止；现实世界没有发生短信行为');});
+      stop.addEventListener('click', () => {if(timer === null)return;clearTimer();setState('stopped');writeLog('STOP','当前进程已手动停止');});
       phone.addEventListener('input', () => {phone.value = phone.value.replace(/\D/g,'').slice(0,11);});
       window.addEventListener('pagehide',clearTimer);
     })();
